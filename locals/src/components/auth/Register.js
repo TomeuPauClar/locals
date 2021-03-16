@@ -182,7 +182,7 @@ class Register extends Component {
         console.log(response);
         if (response.data.correcta) {
           this.props.handleSuccessfulAuth(response.data);
-          this.setState({ redirect: "/need-email-verification" });
+          this.setState({ redirect: "/" });
         } else {
           switch (response.data.missatge) {
             case "BadPasswordConfirmation":

@@ -31,7 +31,7 @@ const styles = (theme) => ({
 class Header extends Component {
   constructor(props) {
     super(props);
-    this.state = { anchorEl: null, auth: false };
+    this.state = { anchorEl: null};
     this.handleMenu = this.handleMenu.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
@@ -49,8 +49,8 @@ class Header extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { anchorEl, auth } = this.state;
+    const { classes, loggedIn } = this.props;
+    const { anchorEl } = this.state;
 
     const LinkHome = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/" />);
     const LinkEstabliments = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/establiments" />);
@@ -72,7 +72,7 @@ class Header extends Component {
                 Establiments
               </Button>
             </div>
-            {auth ? (
+            {loggedIn ? (
               <div>
                 <IconButton aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={this.handleMenu} color="inherit">
                   <AccountCircle />

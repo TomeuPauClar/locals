@@ -115,7 +115,7 @@ class App extends Component {
       <div className={classes.wrapper}>
         <Router>
           <ScrollToTop />
-          <Header />
+          <Header loggedIn={loggedIn} />
           <div className={classes.content}>
             <Switch>
               <Route exact path="/" render={(props) => <Home {...props} />} />
