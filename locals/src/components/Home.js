@@ -19,6 +19,12 @@ import Slider from "react-animated-slider";
 import "react-animated-slider/build/horizontal.css";
 import { Rating } from "@material-ui/lab";
 
+//Axios
+import axios from "axios";
+
+// Env vars
+const defaultUrl = process.env["REACT_APP_URL"];
+
 const styles = (theme) => ({
   root: {
     textAlign: "center",
@@ -42,73 +48,75 @@ const styles = (theme) => ({
     padding: "5px",
   },
   span: {
-    color: "#C00",
+    color: "#ff9980",
+    margin: 8,
   },
 });
 
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      total_users: 0,
+      locals: 0,
+      commentaries: 0,
+      array_estab: [],
+      info_general:[],
+      error:false,
+      cargado:false
+    };
   }
 
   componentDidMount() {
     document.title = "Locals";
+    //Descarrega slider
+    axios
+      .get(defaultUrl + "establiment/slider/")
+      .then((resposta) => {
+        this.setState({ array_estab: resposta.data.dades, cargado: true });
+      })
+      .catch((error) => {
+        this.setState({ error, cargado: true });
+      });
+      //Descarrega info general
+      axios
+      .get(defaultUrl + "establiment/info-general/")
+      .then((resposta) => {
+        this.setState({ info_general: resposta.data.dades, cargado: true });
+      })
+      .catch((error) => {
+        this.setState({ error, cargado: true });
+      });
   }
 
   render() {
     const { classes } = this.props;
 
-    let obj1 = {
-      title: "test",
-      description: "descriptionasdasdasdasdasdasd",
-      button: "Visitanos",
-      image:
-        "https://cdn.computerhoy.com/sites/navi.axelspringer.es/public/media/image/2018/08/fondos-pantalla-full-hd-animales_4.jpg",
-      rating: 3,
-    };
-
-    let obj2 = {
-      title: "test2",
-      description: "description2asdasdasdasdasdasdasd",
-      button: "Visitanos",
-      image: "https://wallpaperaccess.com/full/2040740.jpg",
-      rating: 2.5,
-    };
-    let obj3 = {
-      title: "test3",
-      description: "description3asdasdasdasdasdasdasd",
-      button: "Visitanos",
-      image:
-        "https://i.pinimg.com/originals/fe/38/d0/fe38d0f79e781b796583438021f8e346.jpg",
-      rating: 4.5,
-    };
-
-    let content = [obj1, obj2, obj3];
+    const { array_estab } = this.state;
     return (
       <>
         <Slider autoplay={2000}>
-          {content.map((item, index) => (
+          {array_estab.map((item, index) => (
             <div
               key={index}
               style={{
-                background: `url('${item.image}') no-repeat center center`,
+                background: `url(${defaultUrl}/upload/images/establiment/${item.foto}) no-repeat center center`,
               }}
               className={classes.center}
             >
               <Paper className={classes.paper2}>
                 <div className="center">
-                  <h1>{item.title}</h1>
-                  <p>{item.description}</p>
+                  <h1>{item.nom}</h1>
+                  <p>Telèfon: {item.telefon}</p>
                   <Rating
                     name="half-rating"
-                    defaultValue={item.rating}
+                    value={parseFloat(item.nota)}
                     precision={0.5}
                     size="medium"
                     readOnly
                   />
                   <br />
-                  <Button color="secondary">{item.button}</Button>
+                  <Button color="secondary">Visita</Button>
                 </div>
               </Paper>
             </div>
@@ -118,7 +126,7 @@ class Home extends Component {
         <Container>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="h1">Quí som?</Typography>
+              <Typography variant="h2">Quí som?</Typography>
             </Grid>
             <Divider width="70%" />
             <Grid item xs={12}>
@@ -135,7 +143,10 @@ class Home extends Component {
                     color="textSecondary"
                     gutterBottom
                   >
-                    <span className={classes.span}>500</span> usuarios totales
+                    <span className={classes.span}>
+                      {this.state.info_general.usuaris}
+                    </span>
+                    usuarios totales
                   </Typography>
                 </CardContent>
               </Card>
@@ -144,7 +155,8 @@ class Home extends Component {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
-                    <span className={classes.span}>300</span> establimentos
+                      <span className={classes.span}>{this.state.info_general.establiments}</span>
+                    establiments
                   </Typography>
                 </CardContent>
               </Card>
@@ -153,7 +165,10 @@ class Home extends Component {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
-                    <span className={classes.span}>3000</span> comentarios
+                    <span className={classes.span}>
+                      {this.state.info_general.comentaris}
+                    </span>
+                    comentarios
                   </Typography>
                 </CardContent>
               </Card>
