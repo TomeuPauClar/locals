@@ -8,6 +8,7 @@ import {
   CardContent,
   Container,
   Divider,
+  Grid,
   Paper,
   Typography,
   withStyles,
@@ -20,11 +21,8 @@ import { Rating } from "@material-ui/lab";
 
 const styles = (theme) => ({
   root: {
-    width: "15%",
-    float: "left",
-    margin: "5%",
     textAlign: "center",
-    fontSize: "1.2rem",
+    fontSize: "70%",
   },
   paper: {
     backgrowndColor: theme.palette.background.paper,
@@ -116,49 +114,51 @@ class Home extends Component {
             </div>
           ))}
         </Slider>
-        <Container>
-          <Typography variant="h1">Quí som?</Typography>
-          <div className={classes.info}>
-            <Divider width="70%" />
-            <Typography variant="h5">
-              Som una empresa que promociona establiments, oferint al client la
-              oportunitat de valorar i compartir les seves experiencies
-            </Typography>
-          </div>
 
-          <div>
-            <Card className={classes.root}>
-              <CardContent>
-                <Typography
-                  className={classes.title}
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  <span className={classes.span}>5</span> usuarios
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card className={classes.root}>
-              <CardContent>
-                <Typography
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  <span className={classes.span}>300</span> establimentos
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card className={classes.root}>
-              <CardContent>
-                <Typography
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  <span className={classes.span}>3000</span> comentarios
-                </Typography>
-              </CardContent>
-            </Card>
-          </div>
+        <Container>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h1">Quí som?</Typography>
+            </Grid>
+            <Divider width="70%" />
+            <Grid item xs={12}>
+              <Typography variant="h5">
+                Som una empresa que promociona establiments, oferint al client
+                la oportunitat de valorar i compartir les seves experiencies
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Card className={classes.root}>
+                <CardContent>
+                  <Typography
+                    className={classes.title}
+                    color="textSecondary"
+                    gutterBottom
+                  >
+                    <span className={classes.span}>500</span> usuarios totales
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={4}>
+              <Card className={classes.root}>
+                <CardContent>
+                  <Typography color="textSecondary" gutterBottom>
+                    <span className={classes.span}>300</span> establimentos
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={4}>
+              <Card className={classes.root}>
+                <CardContent>
+                  <Typography color="textSecondary" gutterBottom>
+                    <span className={classes.span}>3000</span> comentarios
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
         </Container>
       </>
     );
