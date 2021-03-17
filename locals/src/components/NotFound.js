@@ -3,7 +3,6 @@ import React, { Component } from "react";
 
 // Material UI imports
 import {
-  Button,
   Container,
   Grid,
   Paper,
@@ -12,8 +11,6 @@ import {
 } from "@material-ui/core";
 
 import Logo from "../alcateam.svg";
-import { Link } from "react-router-dom";
-
 const styles = (theme) => ({
   paper: {
     backgrowndColor: theme.palette.background.paper,
@@ -21,7 +18,7 @@ const styles = (theme) => ({
     padding: 15,
   },
   img: {
-    width: "30vw",
+    width: "15vw",
   },
 });
 
@@ -49,23 +46,26 @@ class NotFound extends Component {
               alignItems="center"
             >
               <Grid item xs={12}>
+                <Typography variant="h1">
+                  <span>404</span>
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
                 <div>
                   <img
                     className={classes.img}
                     src={Logo}
-                    alt="Page not found"
+                    alt="Recurs no trobat"
                   />
                 </div>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h3">
+                <Typography variant="h3">Not Found</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h4">
                   Alguna cosa no està bé, puc notar-ho
                 </Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Link color="secondary" to="/home">
-                  <Button color="secondary">Pàgina principal</Button>
-                </Link>
               </Grid>
             </Grid>
           </Paper>

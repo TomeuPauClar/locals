@@ -141,7 +141,7 @@ class Home extends Component {
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
                     <span className={classes.span}>{this.state.info_general.comentaris}</span>
-                    comentarios
+                    comentaris
                   </Typography>
                 </CardContent>
               </Card>
