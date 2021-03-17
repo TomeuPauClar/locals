@@ -8,6 +8,7 @@ import { Container, Paper, Typography, withStyles } from "@material-ui/core";
 import axios from "axios";
 
 import { Redirect } from "react-router";
+const defaultUrl = process.env["REACT_APP_URL"];
 
 const styles = (theme) => ({
   paper: {
