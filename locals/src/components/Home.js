@@ -11,6 +11,7 @@ import { Rating } from "@material-ui/lab";
 
 //Axios
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 // Env vars
 const defaultUrl = process.env["REACT_APP_URL"];
@@ -41,6 +42,9 @@ const styles = (theme) => ({
     color: "#ff9980",
     margin: 8,
   },
+  grid: {
+    margin: 10,
+  }
 });
 
 class Home extends Component {
@@ -83,6 +87,7 @@ class Home extends Component {
     const { classes } = this.props;
 
     const { array_estab } = this.state;
+    console.log(array_estab);
     return (
       <>
         <Slider autoplay={5000}>
@@ -100,7 +105,7 @@ class Home extends Component {
                   <p>Telèfon: {item.telefon}</p>
                   <Rating name="half-rating" value={parseFloat(item.nota)} precision={0.5} size="medium" readOnly />
                   <br />
-                  <Button color="secondary">Visita</Button>
+                  <Link to={"/establiment/"+item.idEstabliment}><Button color="secondary">Visita</Button></Link>
                 </div>
               </Paper>
             </div>
@@ -108,7 +113,7 @@ class Home extends Component {
         </Slider>
 
         <Container>
-          <Grid container spacing={2}>
+          <Grid className={classes.grid} container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h2">Quí som?</Typography>
             </Grid>
