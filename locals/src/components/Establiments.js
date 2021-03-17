@@ -8,6 +8,9 @@ import { ArrowDropDown, Book, Phone, Search, SortByAlpha, Star } from "@material
 import axios from "axios";
 import { Rating } from "@material-ui/lab";
 
+// React Router Dom
+import { Link as RouterLink } from "react-router-dom";
+
 const defaultUrl = process.env["REACT_APP_URL"];
 
 const styles = (theme) => ({
@@ -267,7 +270,7 @@ class Establiments extends Component {
                 return (
                   <Card key={establiment.idEstabliment} className={classes.card}>
                     {establiment.destacat === "1" && <Star className={classes.star} color="primary" />}
-                    <CardActionArea>
+                    <CardActionArea component={getLink(establiment.idEstabliment)}>
                       <CardMedia className={classes.media} image={image} title={"Fotografia Preferida de l'establiment " + establiment.nom} />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
@@ -291,6 +294,10 @@ class Establiments extends Component {
       </Box>
     );
   }
+}
+
+function getLink(idEstabliment) {
+  return React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to={"/establiment/" + idEstabliment} />);
 }
 
 export default withStyles(styles, { withTheme: true })(Establiments);
