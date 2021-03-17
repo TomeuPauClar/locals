@@ -87,7 +87,7 @@ class Home extends Component {
     const { classes } = this.props;
 
     const { array_estab } = this.state;
-    console.log(array_estab);
+
     return (
       <>
         <Slider autoplay={5000}>
@@ -95,7 +95,7 @@ class Home extends Component {
             <div
               key={index}
               style={{
-                background: `url(${defaultUrl}/upload/images/establiment/${item.foto}) no-repeat center center`,
+                background: `url(${defaultUrl}upload/images/establiment/${item.foto}) no-repeat center center`,
               }}
               className={classes.center}
             >
