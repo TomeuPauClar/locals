@@ -121,7 +121,7 @@ class Home extends Component {
                 <CardContent>
                   <Typography className={classes.title} color="textSecondary" gutterBottom>
                     <span className={classes.span}>{this.state.info_general.usuaris}</span>
-                    usuarios
+                    usuaris
                   </Typography>
                 </CardContent>
               </Card>
