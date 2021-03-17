@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import NotFound from "./components/NotFound";
 import Establiments from "./components/Establiments";
+import Establiment from "./components/Establiment";
 import Home from "./components/Home";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
@@ -125,6 +126,7 @@ class App extends Component {
               <Route exact path="/login" render={(props) => <Login {...props} loggedIn={loggedIn} handleSuccessfulAuth={this.handleSuccessfulAuth} handleSnackbar={this.handleSnackbar} />} />
               <Route exact path="/register" render={(props) => <Register {...props} loggedIn={loggedIn} handleSuccessfulAuth={this.handleSuccessfulAuth} handleSnackbar={this.handleSnackbar} />} />
               <Route exact path="/contacte" render={(props) => <Contact {...props} />} />
+              <Route exact path="/establiment/:id" render={(props) => <Establiment {...props} />} />
               {dadesCarregades && <Route exact path="/perfil/:id" render={(props) => <Profile {...props} loggedIn={loggedIn} usuari={usuari} />} />}
               <Route exact path="/home">
                 <Redirect to="/" />
