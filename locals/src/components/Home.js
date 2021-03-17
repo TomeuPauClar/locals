@@ -2,17 +2,7 @@
 import React, { Component } from "react";
 
 // Material UI imports
-import {
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Divider,
-  Grid,
-  Paper,
-  Typography,
-  withStyles,
-} from "@material-ui/core";
+import { Button, Card, CardContent, Container, Divider, Grid, Paper, Typography, withStyles } from "@material-ui/core";
 
 //Animated slider components
 import Slider from "react-animated-slider";
@@ -61,9 +51,9 @@ class Home extends Component {
       locals: 0,
       commentaries: 0,
       array_estab: [],
-      info_general:[],
-      error:false,
-      cargado:false
+      info_general: [],
+      error: false,
+      cargado: false,
     };
   }
 
@@ -78,8 +68,8 @@ class Home extends Component {
       .catch((error) => {
         this.setState({ error, cargado: true });
       });
-      //Descarrega info general
-      axios
+    //Descarrega info general
+    axios
       .get(defaultUrl + "establiment/info-general/")
       .then((resposta) => {
         this.setState({ info_general: resposta.data.dades, cargado: true });
@@ -95,7 +85,7 @@ class Home extends Component {
     const { array_estab } = this.state;
     return (
       <>
-        <Slider autoplay={2000}>
+        <Slider autoplay={5000}>
           {array_estab.map((item, index) => (
             <div
               key={index}
@@ -108,13 +98,7 @@ class Home extends Component {
                 <div className="center">
                   <h1>{item.nom}</h1>
                   <p>Telèfon: {item.telefon}</p>
-                  <Rating
-                    name="half-rating"
-                    value={parseFloat(item.nota)}
-                    precision={0.5}
-                    size="medium"
-                    readOnly
-                  />
+                  <Rating name="half-rating" value={parseFloat(item.nota)} precision={0.5} size="medium" readOnly />
                   <br />
                   <Button color="secondary">Visita</Button>
                 </div>
@@ -130,22 +114,13 @@ class Home extends Component {
             </Grid>
             <Divider width="70%" />
             <Grid item xs={12}>
-              <Typography variant="h5">
-                Som una empresa que promociona establiments, oferint al client
-                la oportunitat de valorar i compartir les seves experiencies
-              </Typography>
+              <Typography variant="h5">Som una empresa que promociona establiments, oferint al client la oportunitat de valorar i compartir les seves experiencies</Typography>
             </Grid>
             <Grid item xs={4}>
               <Card className={classes.root}>
                 <CardContent>
-                  <Typography
-                    className={classes.title}
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    <span className={classes.span}>
-                      {this.state.info_general.usuaris}
-                    </span>
+                  <Typography className={classes.title} color="textSecondary" gutterBottom>
+                    <span className={classes.span}>{this.state.info_general.usuaris}</span>
                     usuarios totales
                   </Typography>
                 </CardContent>
@@ -155,7 +130,7 @@ class Home extends Component {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
-                      <span className={classes.span}>{this.state.info_general.establiments}</span>
+                    <span className={classes.span}>{this.state.info_general.establiments}</span>
                     establiments
                   </Typography>
                 </CardContent>
@@ -165,9 +140,7 @@ class Home extends Component {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
-                    <span className={classes.span}>
-                      {this.state.info_general.comentaris}
-                    </span>
+                    <span className={classes.span}>{this.state.info_general.comentaris}</span>
                     comentarios
                   </Typography>
                 </CardContent>

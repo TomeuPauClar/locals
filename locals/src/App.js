@@ -19,6 +19,7 @@ import ScrollToTop from "./ScrollToTop";
 
 // Axios Import
 import axios from "axios";
+import Profile from "./components/Profile";
 
 // Cookies functions
 const cookies = require("./cookies");
@@ -60,7 +61,7 @@ class App extends Component {
         responseType: "json",
       })
         .then((response) => {
-          console.log("Check Login Status Response: ", response);
+          // console.log("Check Login Status Response: ", response);
           if (response.data.correcta) {
             this.setState({
               loggedIn: true,
@@ -95,6 +96,7 @@ class App extends Component {
     } else {
       cookies.deleteCookie("nom");
     }
+    this.checkLoginStatus();
   }
 
   handleSnackbar(message, severity) {
@@ -109,13 +111,13 @@ class App extends Component {
   }
 
   render() {
+    const { usuari, loggedIn, dadesCarregades } = this.state;
     const { classes } = this.props;
-    const { loggedIn } = this.props;
     return (
       <div className={classes.wrapper}>
         <Router>
           <ScrollToTop />
-          <Header loggedIn={loggedIn} />
+          <Header loggedIn={loggedIn} usuari={usuari} />
           <div className={classes.content}>
             <Switch>
               <Route exact path="/" render={(props) => <Home {...props} />} />
@@ -123,6 +125,7 @@ class App extends Component {
               <Route exact path="/login" render={(props) => <Login {...props} loggedIn={loggedIn} handleSuccessfulAuth={this.handleSuccessfulAuth} handleSnackbar={this.handleSnackbar} />} />
               <Route exact path="/register" render={(props) => <Register {...props} loggedIn={loggedIn} handleSuccessfulAuth={this.handleSuccessfulAuth} handleSnackbar={this.handleSnackbar} />} />
               <Route exact path="/contacte" render={(props) => <Contact {...props} />} />
+              {dadesCarregades && <Route exact path="/perfil/:id" render={(props) => <Profile {...props} loggedIn={loggedIn} usuari={usuari} />} />}
               <Route exact path="/home">
                 <Redirect to="/" />
               </Route>

@@ -49,13 +49,14 @@ class Header extends Component {
   }
 
   render() {
-    const { classes, loggedIn } = this.props;
+    const { classes, loggedIn, usuari } = this.props;
     const { anchorEl } = this.state;
 
     const LinkHome = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/" />);
     const LinkEstabliments = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/establiments" />);
     const LinkLogin = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/login" />);
     const LinkRegister = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/register" />);
+    const LinkPerfil = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to={"/perfil/" + usuari.idUsuari} />);
 
     return (
       <div className={classes.root}>
@@ -88,7 +89,7 @@ class Header extends Component {
                   open={Boolean(anchorEl)}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={this.handleClose} component={LinkPerfil}>Perfil</MenuItem>
                   <MenuItem onClick={this.handleClose}>My account</MenuItem>
                 </Menu>
               </div>
