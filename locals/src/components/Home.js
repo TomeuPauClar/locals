@@ -11,7 +11,7 @@ import { Rating } from "@material-ui/lab";
 
 //Axios
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 // Env vars
 const defaultUrl = process.env["REACT_APP_URL"];
@@ -83,6 +83,10 @@ class Home extends Component {
       });
   }
 
+  link(id) {
+    return React.forwardRef((props, ref) => <RouterLink ref={ref} to={"/establiment/"+id} {...props} />);
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -105,7 +109,7 @@ class Home extends Component {
                   <p>Telèfon: {item.telefon}</p>
                   <Rating name="half-rating" value={parseFloat(item.nota)} precision={0.5} size="medium" readOnly />
                   <br />
-                  <Link to={"/establiment/"+item.idEstabliment}><Button color="secondary">Visita</Button></Link>
+                  <Button color="secondary" component={this.link(item.idEstabliment)}>Visitans</Button>
                 </div>
               </Paper>
             </div>
