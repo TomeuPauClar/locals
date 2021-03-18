@@ -8,6 +8,9 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import axios from "axios";
 
+// Email
+import emailjs from 'emailjs-com';
+
 // Cookies functions
 const cookies = require("../../cookies");
 
@@ -142,6 +145,38 @@ class Login extends Component {
       this.setState({ emailError: false, emailErrorMessage: "" });
     }
     // Aqui envias el correo
+
+    var result= '';
+    var characters= 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./$%&@';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < 10; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    let envio={
+      email:this.state.email,
+      password:result
+    }
+
+    axios({
+      method: "POST",
+      url: defaultUrl + "usuari/restablir-contrasenya/",
+      data:envio,
+      dataType: "json",
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    emailjs.send('service_vwcldja', 'template_91jzf7y', envio, 'user_JBFHmg8PRIQKgXdHEOeWS')
+      .then((result) => {
+          this.setState({redirect:"/"});
+      }, (error) => {
+          console.log(error.text);
+      });
   }
 
   render() {
