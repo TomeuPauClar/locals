@@ -33,6 +33,11 @@ const styles = (theme) => ({
     display: "flex",
     flexDirection: "column",
   },
+  errorInput: {
+    fontSize: 12, 
+    display: "flex", 
+    alignItems: "center"
+  },
 });
 
 class Login extends Component {
@@ -183,7 +188,6 @@ class Login extends Component {
     const { classes } = this.props;
 
     const LinkRegister = React.forwardRef((props, ref) => <RouterLink ref={ref} to="/register" {...props} />);
-    const LinkCanviDeContrasenya = React.forwardRef((props, ref) => <RouterLink ref={ref} to="/canvi-contrasenya" {...props} />);
 
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />;
@@ -214,7 +218,7 @@ class Login extends Component {
                 error={this.state.emailError}
                 helperText={
                   this.state.emailError ? (
-                    <Typography component={"span"} style={{ fontSize: 12, display: "flex", alignItems: "center" }}>
+                    <Typography component={"span"} className={classes.errorInput}>
                       <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
                       {this.state.emailErrorMessage}
                     </Typography>
@@ -245,7 +249,7 @@ class Login extends Component {
                 error={this.state.passwordError}
                 helperText={
                   this.state.passwordError ? (
-                    <Typography component={"span"} style={{ fontSize: 12, display: "flex", alignItems: "center" }}>
+                    <Typography component={"span"} className={classes.errorInput}>
                       <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
                       {this.state.passwordErrorMessage}
                     </Typography>
