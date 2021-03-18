@@ -27,6 +27,16 @@ const styles = (theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  errorTexte: {
+    fontSize: 12, 
+    display: "flex", 
+    alignItems: "center"
+  },
+  errorIcon: {
+    fontSize: 15, 
+    marginRight: "0.75rem",
+  },
+
 });
 
 class Register extends Component {
@@ -258,8 +268,8 @@ class Register extends Component {
                     error={this.state.emailError}
                     helperText={
                       this.state.emailError ? (
-                        <Typography component={"span"} style={{ fontSize: 12, display: "flex", alignItems: "center" }}>
-                          <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
+                        <Typography component={"span"} className={classes.errorTexte}>
+                          <ErrorIcon className={classes.errorIcon} />
                           {this.state.emailErrorMessage}
                         </Typography>
                       ) : (
@@ -281,8 +291,8 @@ class Register extends Component {
                     error={this.state.nomError}
                     helperText={
                       this.state.nomError ? (
-                        <Typography component={"span"} style={{ fontSize: 12, display: "flex", alignItems: "center" }}>
-                          <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
+                        <Typography component={"span"} className={classes.errorTexte}>
+                          <ErrorIcon className={classes.errorIcon} />
                           {this.state.nomErrorMessage}
                         </Typography>
                       ) : (
@@ -314,8 +324,8 @@ class Register extends Component {
                     error={this.state.passwordError}
                     helperText={
                       this.state.passwordError ? (
-                        <Typography component={"span"} style={{ fontSize: 12, display: "flex", alignItems: "center" }}>
-                          <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
+                        <Typography component={"span"} className={classes.errorTexte}>
+                          <ErrorIcon className={classes.errorIcon} />
                           {this.state.passwordErrorMessage}
                         </Typography>
                       ) : (
@@ -337,8 +347,8 @@ class Register extends Component {
                     error={this.state.passwordConfirmationError}
                     helperText={
                       this.state.passwordConfirmationError ? (
-                        <Typography component={"span"} style={{ fontSize: 12, display: "flex", alignItems: "center" }}>
-                          <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
+                        <Typography component={"span"} className={classes.errorTexte}>
+                          <ErrorIcon className={classes.errorIcon} />
                           {this.state.passwordConfirmationErrorMessage}
                         </Typography>
                       ) : (

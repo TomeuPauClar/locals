@@ -70,6 +70,11 @@ const styles = (theme) => ({
   margen: {
     margin: "1.75rem 0",
   },
+  spanPro: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }
 });
 
 class Home extends Component {
@@ -234,11 +239,7 @@ class Home extends Component {
                   <ListItemText
                     primary={
                       <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
+                        className={classes.spanPro}
                       >
                         <Rating
                           value={parseFloat(item.valoracio)}
