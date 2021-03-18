@@ -2,7 +2,22 @@
 import React, { Component } from "react";
 
 // Material UI imports
-import { Button, Card, CardContent, Container, Divider, Grid, Paper, Typography, withStyles } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Paper,
+  Typography,
+  withStyles,
+} from "@material-ui/core";
 
 //Animated slider components
 import Slider from "react-animated-slider";
@@ -42,9 +57,19 @@ const styles = (theme) => ({
     color: "#ff9980",
     margin: 8,
   },
-  grid: {
-    margin: 10,
-  }
+  inline: {
+    display: "inline",
+  },
+  link: {
+    color: "#fafaff",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
+  margen: {
+    margin: "1.75rem 0",
+  },
 });
 
 class Home extends Component {
@@ -56,6 +81,7 @@ class Home extends Component {
       commentaries: 0,
       array_estab: [],
       info_general: [],
+      ultComment: [],
       error: false,
       cargado: false,
     };
@@ -81,16 +107,29 @@ class Home extends Component {
       .catch((error) => {
         this.setState({ error, cargado: true });
       });
+    //Descarrega els ultims 5 commentaris
+    axios
+      .get(defaultUrl + "comentari/conjunt/")
+      .then((resposta) => {
+        this.setState({ ultComment: resposta.data.dades, cargado: true });
+      })
+      .catch((error) => {
+        this.setState({ error, cargado: true });
+      });
   }
 
-  link(id) {
-    return React.forwardRef((props, ref) => <RouterLink ref={ref} to={"/establiment/"+id} {...props} />);
+  link(id, ruta) {
+    return React.forwardRef((props, ref) => (
+      <RouterLink ref={ref} to={"/"+ruta+"/" + id} {...props} />
+    ));
   }
 
   render() {
     const { classes } = this.props;
 
     const { array_estab } = this.state;
+
+    const ultCommentari = this.state.ultComment;
 
     return (
       <>
@@ -107,9 +146,20 @@ class Home extends Component {
                 <div className="center">
                   <h1>{item.nom}</h1>
                   <p>Telèfon: {item.telefon}</p>
-                  <Rating name="half-rating" value={parseFloat(item.nota)} precision={0.5} size="medium" readOnly />
+                  <Rating
+                    name="half-rating"
+                    value={parseFloat(item.nota)}
+                    precision={0.5}
+                    size="medium"
+                    readOnly
+                  />
                   <br />
-                  <Button color="secondary" component={this.link(item.idEstabliment)}>Visitans</Button>
+                  <Button
+                    color="secondary"
+                    component={this.link(item.idEstabliment)}
+                  >
+                    Visitans
+                  </Button>
                 </div>
               </Paper>
             </div>
@@ -117,19 +167,28 @@ class Home extends Component {
         </Slider>
 
         <Container>
-          <Grid className={classes.grid} container spacing={2}>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h2">Quí som?</Typography>
             </Grid>
             <Divider width="70%" />
             <Grid item xs={12}>
-              <Typography variant="h5">Som una empresa que promociona establiments, oferint al client la oportunitat de valorar i compartir les seves experiencies</Typography>
+              <Typography variant="h5">
+                Som una empresa que promociona establiments, oferint al client
+                la oportunitat de valorar i compartir les seves experiencies
+              </Typography>
             </Grid>
             <Grid item xs={4}>
               <Card className={classes.root}>
                 <CardContent>
-                  <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    <span className={classes.span}>{this.state.info_general.usuaris}</span>
+                  <Typography
+                    className={classes.title}
+                    color="textSecondary"
+                    gutterBottom
+                  >
+                    <span className={classes.span}>
+                      {this.state.info_general.usuaris}
+                    </span>
                     usuaris
                   </Typography>
                 </CardContent>
@@ -139,7 +198,9 @@ class Home extends Component {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
-                    <span className={classes.span}>{this.state.info_general.establiments}</span>
+                    <span className={classes.span}>
+                      {this.state.info_general.establiments}
+                    </span>
                     establiments
                   </Typography>
                 </CardContent>
@@ -149,13 +210,73 @@ class Home extends Component {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
-                    <span className={classes.span}>{this.state.info_general.comentaris}</span>
+                    <span className={classes.span}>
+                      {this.state.info_general.comentaris}
+                    </span>
                     comentaris
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
+
+          <Paper className={classes.margen}>
+            {ultCommentari.map((item, index) => (
+              <List>
+                <ListItem key={index} alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={item.nom}
+                      src={defaultUrl + "upload/images/avatar/" + item.avatar}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Rating
+                          value={parseFloat(item.valoracio)}
+                          precision={0.5}
+                          size="small"
+                          readOnly
+                        />
+                        <Typography variant="body2">{item.data}</Typography>
+                      </div>
+                    }
+                    secondary={
+                      <div>
+                        {"De: "}
+                        <Typography
+                          component={this.link(item.idUsuari,"perfil")}
+                          variant="body2"
+                          className={classes.inline+" "+classes.link}
+                          color="textPrimary"
+                        >
+                          {item.nomUsuari}
+                        </Typography>
+                        {" a: "}
+                        <Typography
+                          component={this.link(item.idEstabliment,"establiment")}
+                          variant="body2"
+                          className={classes.inline+" "+classes.link}
+                          color="textPrimary"
+                        >
+                          {item.nomEstabliment}
+                        </Typography>
+                        {" — " + item.comentari}
+                      </div>
+                    }
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </List>
+            ))}
+          </Paper>
         </Container>
       </>
     );

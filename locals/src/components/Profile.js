@@ -27,7 +27,7 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import SettingsIcon from "@material-ui/icons/Settings";
 import CloseIcon from "@material-ui/icons/Close";
 import ErrorIcon from "@material-ui/icons/Error";
-import { AddAPhoto, Star, Visibility, VisibilityOff } from "@material-ui/icons";
+import { AddAPhoto, Visibility, VisibilityOff } from "@material-ui/icons";
 
 import Logo from "../logo.svg";
 
@@ -47,7 +47,7 @@ const styles = (theme) => ({
   },
   largeBanner: {
     height: 240,
-    background: "rgb(255,255,255)",
+    backgroundColor: "rgb(255,255,255)",
     background:
       "radial-gradient(circle, rgba(255,196,0,1) 0%, rgba(255,255,255,1) 69%)",
     color: "#000",
