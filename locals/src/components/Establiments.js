@@ -2,11 +2,11 @@
 import React, { Component } from "react";
 
 // Material UI imports
-import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Chip, Grid, IconButton, InputAdornment, Menu, MenuItem, Paper, TextField, Typography, withStyles } from "@material-ui/core";
-import { ArrowDropDown, Book, Phone, Search, SortByAlpha, Star } from "@material-ui/icons";
+import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Checkbox, Chip, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Paper, Select, Slider, TextField, Typography, withStyles } from "@material-ui/core";
+import { ArrowDropDown, Book, Phone, Search, SortByAlpha, Star, CheckBoxOutlineBlank, CheckBox } from "@material-ui/icons";
 
 import axios from "axios";
-import { Pagination, Rating } from "@material-ui/lab";
+import { Autocomplete, Pagination, Rating } from "@material-ui/lab";
 
 // React Router Dom
 import { Link as RouterLink } from "react-router-dom";
@@ -23,7 +23,7 @@ const styles = (theme) => ({
     marginBottom: 16,
   },
   card: {
-    maxWidth: 345,
+    maxWidth: 425,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
@@ -49,8 +49,12 @@ class Establiments extends Component {
       establiments: [],
       establimentsFiltrats: [],
       establimentsMostrats: [],
+      caregoriesPreus: [],
+      tipusCuina: [],
+      tipusCuinaTriats: [],
+      categoriaPreu: "",
       searchValue: "",
-      nota: [1, 10],
+      nota: [0, 5],
       orderAnchorEl: null,
       pagina: 1,
       numPagines: 0,
@@ -64,11 +68,16 @@ class Establiments extends Component {
     this.ordenarPerNota = this.ordenarPerNota.bind(this);
     this.ordenarPerNom = this.ordenarPerNom.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.handleChangeCategoriaPreu = this.handleChangeCategoriaPreu.bind(this);
+    this.handleNota = this.handleNota.bind(this);
+    this.handleTipusCuina = this.handleTipusCuina.bind(this);
   }
 
   componentDidMount() {
     document.title = "Establiments - Locals";
     this.getEstabliments();
+    this.getCategoriesPreu();
+    this.getTipusCuina();
   }
 
   getEstabliments() {
@@ -78,7 +87,7 @@ class Establiments extends Component {
       responseType: "json",
     })
       .then((response) => {
-        console.log("Resposta al obtenir establiments: ", response);
+        // console.log("Resposta al obtenir establiments: ", response);
         var numPagines = Math.ceil(response.data.dades.length / 6) < 2 ? null : Math.ceil(response.data.dades.length / 6);
         this.setState(
           {
@@ -93,6 +102,67 @@ class Establiments extends Component {
       });
   }
 
+  getCategoriesPreu() {
+    axios({
+      method: "GET",
+      url: defaultUrl + "categoria-preu/array/",
+      responseType: "json",
+    })
+      .then((response) => {
+        // console.log("Resposta al obtenir Categories Preu: ", response);
+        this.setState({
+          caregoriesPreus: response.data.dades,
+        });
+      })
+      .catch((error) => {
+        console.error("Error al obtenir els Categories Preu: ", error);
+      });
+  }
+
+  getTipusCuina() {
+    axios({
+      method: "GET",
+      url: defaultUrl + "tipus-cuina/array/",
+      responseType: "json",
+    })
+      .then((response) => {
+        // console.log("Resposta al obtenir Categories Preu: ", response);
+        this.setState({
+          tipusCuina: response.data.dades,
+        });
+      })
+      .catch((error) => {
+        console.error("Error al obtenir els Categories Preu: ", error);
+      });
+  }
+
+  handleChangeCategoriaPreu(event) {
+    this.setState(
+      {
+        categoriaPreu: event.target.value,
+      },
+      this.filtrar
+    );
+  }
+
+  handleTipusCuina(event, value) {
+    this.setState(
+      {
+        tipusCuinaTriats: value,
+      },
+      this.filtrar
+    );
+  }
+
+  handleNota(event, value) {
+    this.setState(
+      {
+        nota: value,
+      },
+      this.filtrar
+    );
+  }
+
   handlePageChange(e, pagina) {
     this.setState(
       {
@@ -104,7 +174,7 @@ class Establiments extends Component {
 
   canviarPagina() {
     const { establimentsFiltrats, pagina } = this.state;
-    let numPagina = pagina === 1 ? 0 : pagina * 6;
+    let numPagina = pagina === 1 ? 0 : (pagina - 1) * 6;
     var llistaPaginada = establimentsFiltrats.slice(numPagina, numPagina + 6);
     var numPagines = Math.ceil(establimentsFiltrats.length / 6) < 2 ? null : Math.ceil(establimentsFiltrats.length / 6);
     this.setState({
@@ -195,10 +265,9 @@ class Establiments extends Component {
   }
 
   filtrar() {
-    const { searchValue, establiments } = this.state;
-    console.log("Filtrar", searchValue);
+    const { searchValue, establiments, categoriaPreu, nota, tipusCuinaTriats } = this.state;
     var establimentsFiltrats = [];
-    establimentsFiltrats = establiments.filter((e) => elNomCoincideix(e));
+    establimentsFiltrats = establiments.filter((e) => elNomCoincideix(e) && laCategoripreuCoincideix(e) && laNotaCoincideix(e) && elTipusCuinaCoincideix(e));
 
     function elNomCoincideix(establiment) {
       var valorACercar = searchValue.toLowerCase();
@@ -207,6 +276,19 @@ class Establiments extends Component {
       nomEstabliment = nomEstabliment.trim();
       return nomEstabliment.indexOf(valorACercar) > -1;
     }
+
+    function laCategoripreuCoincideix(e) {
+      return categoriaPreu === "" || e.categoriaPreu === categoriaPreu;
+    }
+
+    function laNotaCoincideix(e) {
+      return parseFloat(e.nota) >= nota[0] && parseFloat(e.nota) <= nota[1];
+    }
+
+    function elTipusCuinaCoincideix(e) {
+      return tipusCuinaTriats.length === 0 || tipusCuinaTriats.some((tipusTriat) => e.tipusCuina.some((tipusEstabliment) => tipusTriat === tipusEstabliment));
+    }
+
     this.setState(
       {
         establimentsFiltrats: establimentsFiltrats,
@@ -218,7 +300,7 @@ class Establiments extends Component {
 
   render() {
     const { classes } = this.props;
-    const { searchValue, orderAnchorEl, establimentsMostrats, pagina, numPagines } = this.state;
+    const { searchValue, orderAnchorEl, establimentsMostrats, pagina, numPagines, caregoriesPreus, categoriaPreu, nota, tipusCuina } = this.state;
 
     return (
       <Box m={4}>
@@ -269,29 +351,38 @@ class Establiments extends Component {
         <Grid container direction="row" spacing={2}>
           <Grid item md={3} style={{ width: "100%" }}>
             <Paper style={{ padding: 10 }}>
-              <Typography variant="h5">Filtres</Typography>
-              {/* <Autocomplete
+              <Typography variant="h5" style={{ paddingBottom: 15 }}>Filtres</Typography>
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel id="filtrar-per-categoria-preu">Categoria Preu</InputLabel>
+                <Select labelId="filtrar-per-categoria-preu" value={categoriaPreu} onChange={this.handleChangeCategoriaPreu} label="Categoria Preu">
+                  <MenuItem value="">
+                    <em>Qualsevol Interval de preu</em>
+                  </MenuItem>
+                  {caregoriesPreus && caregoriesPreus.map((value) => <MenuItem value={value}>{value}</MenuItem>)}
+                </Select>
+              </FormControl>
+              <Typography id="nota-slider" gutterBottom style={{ paddingTop: 15 }}>
+                Nota ({nota[0] + "-" + nota[1]})
+              </Typography>
+              <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                <Slider value={nota} step={0.1} min={0} max={5} onChange={this.handleNota} valueLabelDisplay="auto" aria-labelledby="nota-slider" style={{ width: "90%" }} />
+              </div>
+              <Autocomplete
                 multiple
                 style={{ paddingTop: 15 }}
                 fullWidth
-                options={estados}
+                options={tipusCuina}
                 disableCloseOnSelect
-                getOptionLabel={(estado) => estado}
-                renderOption={(estado, { selected }) => (
+                getOptionLabel={(tipus) => tipus}
+                renderOption={(tipus, { selected }) => (
                   <>
-                    <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
-                    {estado}
+                    <Checkbox icon={<CheckBoxOutlineBlank fontSize="small" />} checkedIcon={<CheckBox fontSize="small" />} style={{ marginRight: 8 }} checked={selected} />
+                    {tipus}
                   </>
                 )}
-                renderInput={(params) => <TextField {...params} variant="outlined" label="Estado" />}
-                onChange={(event, value) => this.handleEstado(event, value)}
-              /> */}
-              {/* <Typography id="nota-slider" gutterBottom style={{ paddingTop: 15 }}>
-                Nota ({nota[0] + "-" + nota[1]})
-              </Typography> */}
-              {/* <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                <Slider value={nota} min={1} max={10} onChange={this.handleNota} valueLabelDisplay="auto" aria-labelledby="nota-slider" style={{ width: "90%" }} />
-              </div> */}
+                renderInput={(params) => <TextField {...params} variant="outlined" label="Tipus Cuina" />}
+                onChange={(event, value) => this.handleTipusCuina(event, value)}
+              />
             </Paper>
           </Grid>
           <Grid item md={9}>
@@ -320,8 +411,7 @@ class Establiments extends Component {
                 );
               })}
             </Box>
-            <Typography>Page: {pagina}</Typography>
-            {numPagines && <Pagination count={numPagines} page={pagina} onChange={this.handlePageChange} />}
+            <div style={{ display: "flex", justifyContent: "center", marginTop: 15 }}>{numPagines && <Pagination color="primary" count={numPagines} page={pagina} onChange={this.handlePageChange} />}</div>
           </Grid>
         </Grid>
       </Box>

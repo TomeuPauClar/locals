@@ -2,13 +2,42 @@
 import React, { Component } from "react";
 
 // Material UI imports
-import { Avatar, Card, CardContent, CardMedia, Chip, Collapse, Container, Divider, Grid, GridList, GridListTile, GridListTileBar, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Paper, Typography, withStyles } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
+  Collapse,
+  Container,
+  Divider,
+  Grid,
+  GridList,
+  GridListTile,
+  GridListTileBar,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Paper,
+  TextField,
+  Typography,
+  withStyles,
+} from "@material-ui/core";
 
 // Axios Import
 import axios from "axios";
 
+// React Router Dom
+import { Link as RouterLink } from "react-router-dom";
+
 import { Redirect } from "react-router";
-import { EuroSymbol, ExpandLess, ExpandMore, Phone, Public, Room, Schedule, Star } from "@material-ui/icons";
+import { Delete, Edit, EuroSymbol, ExpandLess, ExpandMore, MoreVert, Phone, Public, Room, Schedule, Star } from "@material-ui/icons";
 import { Rating } from "@material-ui/lab";
 import GoogleMapReact from "google-map-react";
 
@@ -67,6 +96,16 @@ const styles = (theme) => ({
       margin: theme.spacing(0.5),
     },
   },
+  butonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+    "& > *:last-child": {
+      marginRight: 0,
+    },
+  },
 });
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
@@ -74,9 +113,14 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 class Establiment extends Component {
   constructor(props) {
     super(props);
-    this.state = { establiment: {}, idEstabliment: null, redirect: null, openHorari: false };
+    this.state = { establiment: {}, idEstabliment: null, redirect: null, openHorari: false, notaUsuari: 0, comentari: "", jaTeComentari: false, commentMore: null };
     this.getIdEstabliment = this.getIdEstabliment.bind(this);
     this.handleHorariOpen = this.handleHorariOpen.bind(this);
+    this.setNota = this.setNota.bind(this);
+    this.enviarComentari = this.enviarComentari.bind(this);
+    this.setComentari = this.setComentari.bind(this);
+    this.handleCommentMore = this.handleCommentMore.bind(this);
+    this.handleCloseCommentMore = this.handleCloseCommentMore.bind(this);
   }
 
   handleHorariOpen() {
@@ -123,6 +167,11 @@ class Establiment extends Component {
           this.setState({
             establiment: response.data.dades,
           });
+          if (this.props.usuari && response.data.dades.comentaris.some((comentari) => comentari.idUsuari === this.props.usuari.idUsuari)) {
+            this.setState({
+              jaTeComentari: true,
+            });
+          }
           document.title = response.data.dades.nom + " - Establiment - Locals";
         } else {
           this.setState({
@@ -135,13 +184,56 @@ class Establiment extends Component {
       });
   }
 
+  setNota(v, notaUsuari) {
+    this.setState({
+      notaUsuari,
+    });
+  }
+
+  setComentari(e) {
+    this.setState({
+      comentari: e.target.value,
+    });
+  }
+
+  enviarComentari() {
+    const { idEstabliment, comentari, notaUsuari } = this.state;
+    var idUsuari = this.props.usuari.idUsuari;
+    var valoracio = notaUsuari;
+    axios({
+      method: "post",
+      url: defaultUrl + "comentari/",
+      responseType: "json",
+      data: { idEstabliment, idUsuari, comentari, valoracio },
+    })
+      .then((response) => {
+        console.log("Resposta Comentari", response);
+      })
+      .catch((error) => {
+        console.error("Error al inserir un comentari: ", error);
+      });
+  }
+
+  handleCommentMore(e) {
+    this.setState({
+      commentMore: e.currentTarget,
+    });
+  }
+
+  handleCloseCommentMore() {
+    this.setState({
+      commentMore: null,
+    });
+  }
+
   render() {
     const { classes, usuari, loggedIn } = this.props;
-    const { establiment, redirect, openHorari } = this.state;
+    const { establiment, redirect, openHorari, notaUsuari, comentari, jaTeComentari, commentMore } = this.state;
     if (redirect) {
       return <Redirect to={redirect} />;
     }
 
+    const avatar = usuari.avatar ? (usuari.avatar === "noAvatar.jpg" ? "" : defaultUrl + "/upload/images/avatar/" + usuari.avatar) : "";
     let image = establiment.fotos ? defaultUrl + "/upload/images/establiment/" + establiment.fotos[0].nomFoto : defaultUrl + "/upload/images/no-image.png";
 
     return (
@@ -264,19 +356,61 @@ class Establiment extends Component {
           </Grid>
 
           <Paper className={classes.comentaris}>
+            {loggedIn && !jaTeComentari && (
+              <div style={{ padding: "8px 16px 0" }}>
+                <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", gap: 10 }}>
+                  {usuari.avatar && <Avatar alt={usuari.nom} src={avatar} />}
+                  <TextField label="Comentari" fullWidth multiline size="small" rowsMax={4} value={comentari} onChange={this.setComentari} />
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginLeft: 44 }}>
+                  <div>
+                    <Rating name="nota-usuari" value={notaUsuari} precision={0.5} onChange={this.setNota} />
+                  </div>
+                  <div className={classes.butonContainer}>
+                    <Button variant="contained">Cancel·lar</Button>
+                    <Button variant="contained" color="primary" onClick={this.enviarComentari}>
+                      Enviar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
             {establiment.comentaris && establiment.comentaris.length > 0 && (
               <List>
                 {establiment.comentaris.map((comentari) => (
-                  <div key={comentari.idComentari}>
+                  <div key={comentari.idUsuari}>
                     <ListItem alignItems="flex-start">
                       <ListItemAvatar>
-                        <Avatar alt={comentari.nom} src="/static/images/avatar/1.jpg" />
+                        <Avatar alt={comentari.nom} src={comentari.avatar ? (comentari.avatar === "noAvatar.jpg" ? "" : defaultUrl + "/upload/images/avatar/" + comentari.avatar) : ""} />
                       </ListItemAvatar>
                       <ListItemText
                         primary={
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                            <Rating value={parseFloat(comentari.valoracio)} precision={0.5} size="small" readOnly />
-                            <Typography variant="body2">{comentari.data}</Typography>
+                            <div style={{ display: "flex", alignItems: "center"}}>
+                              <Rating value={parseFloat(comentari.valoracio)} precision={0.5} size="small" readOnly />
+                              <Typography variant="body2" color="textSecondary"> - {comentari.data}</Typography>
+                            </div>
+                            {usuari.idUsuari && comentari.idUsuari === usuari.idUsuari && (
+                              <>
+                                <IconButton onClick={this.handleCommentMore}>
+                                  <MoreVert />
+                                </IconButton>
+                                <Menu id="simple-menu" anchorEl={commentMore} keepMounted open={Boolean(commentMore)} onClose={this.handleCloseCommentMore}>
+                                  <MenuItem key={"editar"} onClick={this.handleCloseCommentMore}>
+                                    <ListItemIcon>
+                                      <Edit fontSize="small" />
+                                    </ListItemIcon>
+                                    <Typography variant="inherit">Editar</Typography>
+                                  </MenuItem>
+                                  <MenuItem key={"eliminar"} onClick={this.handleCloseCommentMore}>
+                                    <ListItemIcon>
+                                      <Delete fontSize="small" />
+                                    </ListItemIcon>
+                                    <Typography variant="inherit">Eliminar</Typography>
+                                  </MenuItem>
+                                </Menu>
+                              </>
+                            )}
                           </div>
                         }
                         secondary={
@@ -294,12 +428,15 @@ class Establiment extends Component {
                 ))}
               </List>
             )}
-            {loggedIn && <div></div>}
           </Paper>
         </Container>
       </>
     );
   }
+}
+
+function getLink(idUsuari) {
+  return React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to={"/perfil/" + idUsuari} />);
 }
 
 export default withStyles(styles, { withTheme: true })(Establiment);
