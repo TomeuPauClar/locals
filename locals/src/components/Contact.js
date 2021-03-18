@@ -4,6 +4,10 @@ import React, { Component } from "react";
 // Material UI imports
 import { Button, Container, Grid, TextField, Typography, withStyles } from "@material-ui/core";
 
+//Emailjs
+import emailjs from 'emailjs-com';
+import { Redirect } from "react-router";
+
 const styles = (theme) => ({
   container: {
     margin: "1.75rem auto",
@@ -18,6 +22,7 @@ class Contact extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: null,
       correu:"",
       nom:"",
       missatge:"",
@@ -47,7 +52,9 @@ class Contact extends Component {
     this.setState({errorNom:false});
     this.setState({errorCorreu:false});
     this.setState({errorMissatge:false});
+
     event.preventDefault();
+
     let nom = this.state.nom;
     let missatge = this.state.missatge;
     let asumpte =this.state.asumpte;
@@ -74,13 +81,24 @@ class Contact extends Component {
       this.setState({errorAsumpte:true});
       return;
     }
+    // Enviar email
+    emailjs.sendForm('service_vwcldja', 'template_6e8vusr', event.target, 'user_JBFHmg8PRIQKgXdHEOeWS')
+      .then((result) => {
+          this.setState({redirect:"/"});
+      }, (error) => {
+          console.log(error.text);
+      });
 
-    window.open("mailto:alcateams2w@gmail.com?subject="+encodeURIComponent(asumpte)+"&body=De: "+nom+"%0D%0A"+missatge);
-
+      
   }
 
   render() {
     const { classes } = this.props;
+
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />;
+    }
+
     return (
       <>
         <Container className={classes.container}>
