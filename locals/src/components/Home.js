@@ -156,7 +156,7 @@ class Home extends Component {
                   <br />
                   <Button
                     color="secondary"
-                    component={this.link(item.idEstabliment)}
+                    component={this.link(item.idEstabliment,"establiment")}
                   >
                     Visitans
                   </Button>
