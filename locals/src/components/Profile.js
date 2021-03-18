@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { Card, CardContent, Avatar, Typography, Grid, IconButton, Chip, Backdrop, Button, Fade, InputAdornment, Modal, TextField, CardActionArea, Badge } from "@material-ui/core";
+import { Card, CardContent, Avatar, Typography, Grid, IconButton, Chip, Backdrop, Button, Fade, InputAdornment, Modal, TextField, CardActionArea, Badge, Paper } from "@material-ui/core";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import SettingsIcon from "@material-ui/icons/Settings";
 import CloseIcon from "@material-ui/icons/Close";
@@ -88,6 +88,11 @@ const styles = (theme) => ({
     width: "100%",
     padding: 5,
   },
+  paper: {
+    backgrowndColor: theme.palette.background.paper,
+    margin: "1.75rem auto",
+    padding: 15,
+  },
 });
 
 class Profile extends Component {
@@ -95,6 +100,7 @@ class Profile extends Component {
     super(props);
     this.state = {
       user: {},
+      comentaris:[],
       openModal: false,
       nom: "",
       nomError: false,
@@ -104,6 +110,7 @@ class Profile extends Component {
       passwordErrorMessage: "",
       showPassword: false,
       redirect: null,
+      error: false,
     };
 
     this.handleCloseModal = this.handleCloseModal.bind(this);
@@ -115,6 +122,7 @@ class Profile extends Component {
     this.handleAvatarChange = this.handleAvatarChange.bind(this);
     this.handleValidarNom = this.handleValidarNom.bind(this);
     this.handleValidarPassword = this.handleValidarPassword.bind(this);
+    this.comments = this.comments.bind(this);
   }
 
   componentDidMount() {
@@ -131,6 +139,15 @@ class Profile extends Component {
     document.title = "Perfil - Locals";
     if (parseInt(this.props.match.params.id)) {
       this.chargeProfleInfo();
+
+      axios
+      .get(defaultUrl + "comentari/usuari/"+this.props.match.params.id)
+      .then((resposta) => {
+        this.setState({ comentaris: resposta.data.dades.comentari,error:false});
+      })
+      .catch((error) => {
+        this.setState({ error});
+      });
     } else {
       this.setState({
         redirect: "/NotFound",
@@ -282,6 +299,11 @@ class Profile extends Component {
     dades.send(formdata);
   }
 
+  comments() {
+    let comentarios=this.state.comentaris;
+    console.log(comentarios);
+  }
+
   render() {
     const { classes } = this.props;
     const { redirect, openModal, user, nom, nomError, nomErrorMessage, showPassword, password, passwordError, passwordErrorMessage } = this.state;
@@ -295,6 +317,7 @@ class Profile extends Component {
     const joined = user.createdAt ? user.createdAt.split(" ")[0] : "";
 
     return (
+      
       <div className={classes.root}>
         {/* Modal */}
         <Modal
@@ -425,6 +448,10 @@ class Profile extends Component {
             <Chip icon={<CalendarToday fontSize="small" />} label={joined} className={classes.chip} />
           </CardContent>
         </Card>
+{/* Comentarios */}
+        <Paper className={classes.paper}>
+            {this.comments}
+        </Paper>
       </div>
     );
   }
