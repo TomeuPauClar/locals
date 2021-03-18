@@ -185,6 +185,7 @@ class Home extends Component {
                     className={classes.title}
                     color="textSecondary"
                     gutterBottom
+                    component="div"
                   >
                     <span className={classes.span}>
                       {this.state.info_general.usuaris}
@@ -197,7 +198,7 @@ class Home extends Component {
             <Grid item xs={4}>
               <Card className={classes.root}>
                 <CardContent>
-                  <Typography color="textSecondary" gutterBottom>
+                  <Typography component="div" color="textSecondary" gutterBottom>
                     <span className={classes.span}>
                       {this.state.info_general.establiments}
                     </span>
@@ -209,7 +210,7 @@ class Home extends Component {
             <Grid item xs={4}>
               <Card className={classes.root}>
                 <CardContent>
-                  <Typography color="textSecondary" gutterBottom>
+                  <Typography component="div" color="textSecondary" gutterBottom>
                     <span className={classes.span}>
                       {this.state.info_general.comentaris}
                     </span>
@@ -222,8 +223,8 @@ class Home extends Component {
 
           <Paper className={classes.margen}>
             {ultCommentari.map((item, index) => (
-              <List>
-                <ListItem key={index} alignItems="flex-start">
+              <List key={index}>
+                <ListItem alignItems="flex-start">
                   <ListItemAvatar>
                     <Avatar
                       alt={item.nom}
@@ -232,7 +233,7 @@ class Home extends Component {
                   </ListItemAvatar>
                   <ListItemText
                     primary={
-                      <div
+                      <span
                         style={{
                           display: "flex",
                           alignItems: "center",
@@ -246,10 +247,10 @@ class Home extends Component {
                           readOnly
                         />
                         <Typography variant="body2">{item.data}</Typography>
-                      </div>
+                      </span>
                     }
                     secondary={
-                      <div>
+                      <span>
                         {"De: "}
                         <Typography
                           component={this.link(item.idUsuari,"perfil")}
@@ -269,7 +270,7 @@ class Home extends Component {
                           {item.nomEstabliment}
                         </Typography>
                         {" — " + item.comentari}
-                      </div>
+                      </span>
                     }
                   />
                 </ListItem>
