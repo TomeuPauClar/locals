@@ -47,6 +47,7 @@ class App extends Component {
     this.handleSnackbarClose = this.handleSnackbarClose(this);
     this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this);
     this.checkLoginStatus = this.checkLoginStatus.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   componentDidMount() {
@@ -100,6 +101,11 @@ class App extends Component {
     this.checkLoginStatus();
   }
 
+  handleLogout() {
+    cookies.deleteCookie("token");
+    this.checkLoginStatus();
+  }
+
   handleSnackbar(message, severity) {
     this.setState({ snackbarStatus: true, snackbarMessage: message, snackbarSeverity: severity });
   }
@@ -118,7 +124,7 @@ class App extends Component {
       <div className={classes.wrapper}>
         <Router>
           <ScrollToTop />
-          <Header loggedIn={loggedIn} usuari={usuari} />
+          <Header loggedIn={loggedIn} usuari={usuari} handleLogout={this.handleLogout} />
           <div className={classes.content}>
             <Switch>
               <Route exact path="/" render={(props) => <Home {...props} />} />

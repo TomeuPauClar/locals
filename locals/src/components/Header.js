@@ -2,12 +2,11 @@
 import React, { Component } from "react";
 
 // Material UI imports
-import { withStyles } from "@material-ui/core";
+import { Avatar, withStyles } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { Button } from "@material-ui/core";
@@ -15,6 +14,8 @@ import { Home, RestaurantMenu } from "@material-ui/icons";
 
 // React Router Dom
 import { Link as RouterLink } from "react-router-dom";
+
+const defaultUrl = process.env["REACT_APP_URL"];
 
 const styles = (theme) => ({
   root: {
@@ -31,7 +32,7 @@ const styles = (theme) => ({
 class Header extends Component {
   constructor(props) {
     super(props);
-    this.state = { anchorEl: null};
+    this.state = { anchorEl: null };
     this.handleMenu = this.handleMenu.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
@@ -74,9 +75,10 @@ class Header extends Component {
               </Button>
             </div>
             {loggedIn ? (
-              <div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Typography>{usuari.nom}</Typography>
                 <IconButton aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={this.handleMenu} color="inherit">
-                  <AccountCircle />
+                  <Avatar alt={usuari.nom} src={usuari.avatar ? (usuari.avatar === "noAvatar.jpg" ? "" : defaultUrl + "/upload/images/avatar/" + usuari.avatar) : ""} />
                 </IconButton>
                 <Menu
                   id="menu-appbar"
@@ -89,8 +91,10 @@ class Header extends Component {
                   open={Boolean(anchorEl)}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose} component={LinkPerfil}>Perfil</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.handleClose} component={LinkPerfil}>
+                    Perfil
+                  </MenuItem>
+                  <MenuItem onClick={this.props.handleLogout}>Logout</MenuItem>
                 </Menu>
               </div>
             ) : (

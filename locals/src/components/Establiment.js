@@ -106,6 +106,11 @@ const styles = (theme) => ({
       marginRight: 0,
     },
   },
+  comentariExtra: {
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginLeft: 44,
+  },
 });
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
@@ -113,7 +118,7 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 class Establiment extends Component {
   constructor(props) {
     super(props);
-    this.state = { establiment: {}, idEstabliment: null, redirect: null, openHorari: false, notaUsuari: 0, comentari: "", jaTeComentari: false, commentMore: null };
+    this.state = { establiment: {}, idEstabliment: null, redirect: null, openHorari: false, notaUsuari: 0, comentari: "", jaTeComentari: [], commentMore: null, commentExtra: false };
     this.getIdEstabliment = this.getIdEstabliment.bind(this);
     this.handleHorariOpen = this.handleHorariOpen.bind(this);
     this.setNota = this.setNota.bind(this);
@@ -121,6 +126,9 @@ class Establiment extends Component {
     this.setComentari = this.setComentari.bind(this);
     this.handleCommentMore = this.handleCommentMore.bind(this);
     this.handleCloseCommentMore = this.handleCloseCommentMore.bind(this);
+    this.showExtra = this.showExtra.bind(this);
+    this.hideExtra = this.hideExtra.bind(this);
+    this.eliminarComentari = this.eliminarComentari.bind(this);
   }
 
   handleHorariOpen() {
@@ -164,14 +172,12 @@ class Establiment extends Component {
       .then((response) => {
         console.log("Resposta Info Establiment", response);
         if (response.data.correcta) {
-          this.setState({
-            establiment: response.data.dades,
-          });
-          if (this.props.usuari && response.data.dades.comentaris.some((comentari) => comentari.idUsuari === this.props.usuari.idUsuari)) {
-            this.setState({
-              jaTeComentari: true,
-            });
-          }
+          this.setState(
+            {
+              establiment: response.data.dades,
+            },
+            this.getJaTeComentari
+          );
           document.title = response.data.dades.nom + " - Establiment - Locals";
         } else {
           this.setState({
@@ -182,6 +188,26 @@ class Establiment extends Component {
       .catch((error) => {
         console.error("Error al obtenir la informacón de l'establiment: ", error);
       });
+  }
+
+  getJaTeComentari() {
+    const { usuari } = this.props;
+    if (usuari.idUsuari) {
+      axios({
+        method: "get",
+        url: defaultUrl + "comentari/comprova/" + this.state.idEstabliment + "/" + usuari.idUsuari,
+        responseType: "json",
+      })
+        .then((response) => {
+          console.log("L'usuari ja té comentari?", response);
+          this.setState({
+            jaTeComentari: response.data.dades,
+          });
+        })
+        .catch((error) => {
+          console.error("Error al obtenir la informacón de si l'usuari ja te comentari: ", error);
+        });
+    }
   }
 
   setNota(v, notaUsuari) {
@@ -207,7 +233,14 @@ class Establiment extends Component {
       data: { idEstabliment, idUsuari, comentari, valoracio },
     })
       .then((response) => {
-        console.log("Resposta Comentari", response);
+        if (response.data.correcta) {
+          this.setState(
+            {
+              jaTeComentari: { comentari: true, isValidat: false },
+            },
+            this.getEstabliment
+          );
+        }
       })
       .catch((error) => {
         console.error("Error al inserir un comentari: ", error);
@@ -226,15 +259,52 @@ class Establiment extends Component {
     });
   }
 
+  showExtra() {
+    this.setState({
+      commentExtra: true,
+    });
+  }
+
+  hideExtra() {
+    this.setState({
+      commentExtra: false,
+    });
+  }
+
+  eliminarComentari(e) {
+    const { jaTeComentari } = this.state;
+    axios({
+      method: "delete",
+      url: defaultUrl + "comentari/" + jaTeComentari.idComentari,
+      responseType: "json",
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.data.correcta) {
+          this.setState(
+            {
+              jaTeComentari: { comentari: false, isValidat: false },
+            },
+            this.getEstabliment
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error al eliminar un comentari: ", error);
+      });
+  }
+
   render() {
     const { classes, usuari, loggedIn } = this.props;
-    const { establiment, redirect, openHorari, notaUsuari, comentari, jaTeComentari, commentMore } = this.state;
+    const { establiment, redirect, openHorari, notaUsuari, comentari, jaTeComentari, commentMore, commentExtra } = this.state;
     if (redirect) {
       return <Redirect to={redirect} />;
     }
 
     const avatar = usuari.avatar ? (usuari.avatar === "noAvatar.jpg" ? "" : defaultUrl + "/upload/images/avatar/" + usuari.avatar) : "";
     let image = establiment.fotos ? defaultUrl + "/upload/images/establiment/" + establiment.fotos[0].nomFoto : defaultUrl + "/upload/images/no-image.png";
+
+    const comentariExtra = commentExtra ? { display: "flex" } : { display: "none" };
 
     return (
       <>
@@ -356,24 +426,31 @@ class Establiment extends Component {
           </Grid>
 
           <Paper className={classes.comentaris}>
-            {loggedIn && !jaTeComentari && (
-              <div style={{ padding: "8px 16px 0" }}>
+            {loggedIn && !jaTeComentari.comentari && (
+              <div style={{ padding: "8px 16px" }}>
                 <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", gap: 10 }}>
                   {usuari.avatar && <Avatar alt={usuari.nom} src={avatar} />}
-                  <TextField label="Comentari" fullWidth multiline size="small" rowsMax={4} value={comentari} onChange={this.setComentari} />
+                  <TextField label="Comentari" fullWidth multiline size="small" rowsMax={4} value={comentari} onFocus={this.showExtra} onChange={this.setComentari} />
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginLeft: 44 }}>
+                <div className={classes.comentariExtra} style={comentariExtra}>
                   <div>
                     <Rating name="nota-usuari" value={notaUsuari} precision={0.5} onChange={this.setNota} />
                   </div>
                   <div className={classes.butonContainer}>
-                    <Button variant="contained">Cancel·lar</Button>
+                    <Button variant="contained" onClick={this.hideExtra}>
+                      Cancel·lar
+                    </Button>
                     <Button variant="contained" color="primary" onClick={this.enviarComentari}>
                       Enviar
                     </Button>
                   </div>
                 </div>
               </div>
+            )}
+            {jaTeComentari.comentari && jaTeComentari.isValidat === "0" && (
+              <Typography color="textSecondary" style={{ padding: "8px 16px 0" }}>
+                Ja tens un comentari sense validar. Per favor, espera que un administrador el validi.
+              </Typography>
             )}
             {establiment.comentaris && establiment.comentaris.length > 0 && (
               <List>
@@ -386,9 +463,12 @@ class Establiment extends Component {
                       <ListItemText
                         primary={
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                            <div style={{ display: "flex", alignItems: "center"}}>
+                            <div style={{ display: "flex", alignItems: "center" }}>
                               <Rating value={parseFloat(comentari.valoracio)} precision={0.5} size="small" readOnly />
-                              <Typography variant="body2" color="textSecondary"> - {comentari.data}</Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                {" "}
+                                - {comentari.data}
+                              </Typography>
                             </div>
                             {usuari.idUsuari && comentari.idUsuari === usuari.idUsuari && (
                               <>
@@ -402,7 +482,7 @@ class Establiment extends Component {
                                     </ListItemIcon>
                                     <Typography variant="inherit">Editar</Typography>
                                   </MenuItem>
-                                  <MenuItem key={"eliminar"} onClick={this.handleCloseCommentMore}>
+                                  <MenuItem key={"eliminar"} onClick={this.eliminarComentari}>
                                     <ListItemIcon>
                                       <Delete fontSize="small" />
                                     </ListItemIcon>
@@ -414,12 +494,16 @@ class Establiment extends Component {
                           </div>
                         }
                         secondary={
-                          <>
-                            <Typography component="span" variant="body2" className={classes.inline} color="textPrimary">
-                              {comentari.nom}
-                            </Typography>
-                            {" — " + comentari.comentari}
-                          </>
+                          comentari.idUsuari && (
+                            <>
+                              <Typography component="span" variant="body2" className={classes.inline} color="textPrimary">
+                                <Typography variant="inherit" color="inherit" component={getLink(comentari.idUsuari)}>
+                                  {comentari.nom}
+                                </Typography>
+                              </Typography>
+                              {" — " + comentari.comentari}
+                            </>
+                          )
                         }
                       />
                     </ListItem>
@@ -436,7 +520,7 @@ class Establiment extends Component {
 }
 
 function getLink(idUsuari) {
-  return React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to={"/perfil/" + idUsuari} />);
+  return React.forwardRef((props, ref) => <RouterLink ref={ref} to={"/perfil/" + idUsuari} {...props} />);
 }
 
 export default withStyles(styles, { withTheme: true })(Establiment);

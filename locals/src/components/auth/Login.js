@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link as RouterLink, Redirect } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { Container, Avatar, Grid, Typography, TextField, FormControlLabel, Checkbox, Button, Box, InputAdornment, IconButton } from "@material-ui/core";
+import { Container, Avatar, Grid, Typography, TextField, FormControlLabel, Checkbox, Button, Box, InputAdornment, IconButton, Link } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import ErrorIcon from "@material-ui/icons/Error";
 import Visibility from "@material-ui/icons/Visibility";
@@ -52,6 +52,7 @@ class Login extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
     this.handleMouseDownPassword = this.handleMouseDownPassword.bind(this);
+    this.enviarCorreuCanviarContrasenya = this.enviarCorreuCanviarContrasenya.bind(this);
   }
 
   componentDidMount() {
@@ -132,10 +133,22 @@ class Login extends Component {
     event.preventDefault();
   }
 
+  enviarCorreuCanviarContrasenya() {
+    const { email } = this.state;
+    if (!email) {
+      this.setState({ emailError: true, emailErrorMessage: "Introdueix una adreça de correu electrònic o usuari." });
+      return;
+    } else {
+      this.setState({ emailError: false, emailErrorMessage: "" });
+    }
+    // Aqui envias el correo
+  }
+
   render() {
     const { classes } = this.props;
 
     const LinkRegister = React.forwardRef((props, ref) => <RouterLink ref={ref} to="/register" {...props} />);
+    const LinkCanviDeContrasenya = React.forwardRef((props, ref) => <RouterLink ref={ref} to="/canvi-contrasenya" {...props} />);
 
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />;
@@ -206,7 +219,12 @@ class Login extends Component {
                   )
                 }
               />
-              <FormControlLabel control={<Checkbox name="remember" checked={this.state.remember} onChange={this.handleChange} color="primary" />} label="Recorda'm" />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <FormControlLabel control={<Checkbox name="remember" checked={this.state.remember} onChange={this.handleChange} color="primary" />} label="Recorda'm" />
+                <Link onClick={this.enviarCorreuCanviarContrasenya} color="primary">
+                  Has oblidat la teva contrasenya?
+                </Link>
+              </div>
               <Box mt={2} mb={2}>
                 <Grid container direction="row" justify="space-between" alignItems="center">
                   <Button component={LinkRegister} color="primary">
