@@ -1,16 +1,42 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { Card, CardContent, Avatar, Typography, Grid, IconButton, Chip, Backdrop, Button, Fade, InputAdornment, Modal, TextField, CardActionArea, Badge, Paper } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  Avatar,
+  Typography,
+  Grid,
+  IconButton,
+  Chip,
+  Backdrop,
+  Button,
+  Fade,
+  InputAdornment,
+  Modal,
+  TextField,
+  CardActionArea,
+  Badge,
+  Paper,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Divider,
+  ListItemText,
+} from "@material-ui/core";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import SettingsIcon from "@material-ui/icons/Settings";
 import CloseIcon from "@material-ui/icons/Close";
 import ErrorIcon from "@material-ui/icons/Error";
-import { AddAPhoto, Visibility, VisibilityOff } from "@material-ui/icons";
+import { AddAPhoto, Star, Visibility, VisibilityOff } from "@material-ui/icons";
+
+import Logo from "../logo.svg";
 
 // Axios Import
 import axios from "axios";
 import { CalendarToday } from "@material-ui/icons";
 import { Redirect } from "react-router";
+import { Rating } from "@material-ui/lab";
+import { Link as RouterLink } from "react-router-dom";
 
 const defaultUrl = process.env["REACT_APP_URL"];
 
@@ -21,7 +47,13 @@ const styles = (theme) => ({
   },
   largeBanner: {
     height: 240,
-    backgroundColor: "#fcfcfc",
+    background: "rgb(255,255,255)",
+    background:
+      "radial-gradient(circle, rgba(255,196,0,1) 0%, rgba(255,255,255,1) 69%)",
+    color: "#000",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   largeAvatar: {
     position: "absolute",
@@ -93,6 +125,19 @@ const styles = (theme) => ({
     margin: "1.75rem auto",
     padding: 15,
   },
+  color: {
+    color: "#fafaff",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
+  img: {
+    width: 100,
+  },
+  noValidat: {
+    backgroundColor: "#696969",
+  }
 });
 
 class Profile extends Component {
@@ -100,7 +145,7 @@ class Profile extends Component {
     super(props);
     this.state = {
       user: {},
-      comentaris:[],
+      comentaris: [],
       openModal: false,
       nom: "",
       nomError: false,
@@ -122,7 +167,6 @@ class Profile extends Component {
     this.handleAvatarChange = this.handleAvatarChange.bind(this);
     this.handleValidarNom = this.handleValidarNom.bind(this);
     this.handleValidarPassword = this.handleValidarPassword.bind(this);
-    this.comments = this.comments.bind(this);
   }
 
   componentDidMount() {
@@ -141,13 +185,16 @@ class Profile extends Component {
       this.chargeProfleInfo();
 
       axios
-      .get(defaultUrl + "comentari/usuari/"+this.props.match.params.id)
-      .then((resposta) => {
-        this.setState({ comentaris: resposta.data.dades.comentari,error:false});
-      })
-      .catch((error) => {
-        this.setState({ error});
-      });
+        .get(defaultUrl + "comentari/usuari/" + this.props.match.params.id)
+        .then((resposta) => {
+          this.setState({
+            comentaris: resposta.data.dades.comentari,
+            error: false,
+          });
+        })
+        .catch((error) => {
+          this.setState({ error });
+        });
     } else {
       this.setState({
         redirect: "/NotFound",
@@ -207,7 +254,7 @@ class Profile extends Component {
   }
 
   handleAvatarChange(event) {
-    console.log("a")
+    console.log("a");
     this.setState({
       avatar: event.target.files[0],
     });
@@ -216,10 +263,17 @@ class Profile extends Component {
   handleValidarNom() {
     const { nom } = this.state;
     if (!nom) {
-      this.setState({ nomError: true, nomErrorMessage: "Introduce un nombre de usuario." });
+      this.setState({
+        nomError: true,
+        nomErrorMessage: "Introduce un nombre de usuario.",
+      });
       return;
     } else if (nom.length < 1 || nom.length > 50) {
-      this.setState({ nomError: true, nomErrorMessage: "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )" });
+      this.setState({
+        nomError: true,
+        nomErrorMessage:
+          "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
+      });
       return;
     } else {
       this.setState({ nomError: false, nomErrorMessage: "" });
@@ -229,10 +283,19 @@ class Profile extends Component {
   handleValidarPassword() {
     const { password } = this.state;
     if (!password) {
-      this.setState({ passwordError: true, passwordErrorMessage: "Introduce una contraseña." });
+      this.setState({
+        passwordError: true,
+        passwordErrorMessage: "Introduce una contraseña.",
+      });
       return;
-    } else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password)) {
-      this.setState({ passwordError: true, passwordErrorMessage: "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)" });
+    } else if (
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password)
+    ) {
+      this.setState({
+        passwordError: true,
+        passwordErrorMessage:
+          "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
+      });
       return;
     } else {
       this.setState({ passwordError: false, passwordErrorMessage: "" });
@@ -244,20 +307,36 @@ class Profile extends Component {
     var id = user.idUsuari;
 
     if (!nom) {
-      this.setState({ nomError: true, nomErrorMessage: "Introduce un nombre de usuario." });
+      this.setState({
+        nomError: true,
+        nomErrorMessage: "Introduce un nombre de usuario.",
+      });
       return;
     } else if (nom.length < 1 || nom.length > 50) {
-      this.setState({ nomError: true, nomErrorMessage: "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )" });
+      this.setState({
+        nomError: true,
+        nomErrorMessage:
+          "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
+      });
       return;
     } else {
       this.setState({ nomError: false, nomErrorMessage: "" });
     }
 
     if (!password) {
-      this.setState({ passwordError: true, passwordErrorMessage: "Introduce una contraseña." });
+      this.setState({
+        passwordError: true,
+        passwordErrorMessage: "Introduce una contraseña.",
+      });
       return;
-    } else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password)) {
-      this.setState({ passwordError: true, passwordErrorMessage: "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)" });
+    } else if (
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password)
+    ) {
+      this.setState({
+        passwordError: true,
+        passwordErrorMessage:
+          "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
+      });
       return;
     } else {
       this.setState({ passwordError: false, passwordErrorMessage: "" });
@@ -280,13 +359,25 @@ class Profile extends Component {
         } else {
           switch (resposta.missatge) {
             case "NomDuplicat":
-              this.setState({ nomError: true, nomErrorMessage: "Ese nombre de usuario ya está en uso. Prueba con otro." });
+              this.setState({
+                nomError: true,
+                nomErrorMessage:
+                  "Ese nombre de usuario ya está en uso. Prueba con otro.",
+              });
               break;
             case "BadNomFormat":
-              this.setState({ nomError: true, nomErrorMessage: "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )" });
+              this.setState({
+                nomError: true,
+                nomErrorMessage:
+                  "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
+              });
               break;
             case "BadPassword":
-              this.setState({ passwordError: true, passwordErrorMessage: "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)" });
+              this.setState({
+                passwordError: true,
+                passwordErrorMessage:
+                  "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
+              });
               break;
             default:
               this.props.handleSnackbar(resposta.missatge, "error");
@@ -299,25 +390,44 @@ class Profile extends Component {
     dades.send(formdata);
   }
 
-  comments() {
-    let comentarios=this.state.comentaris;
-    console.log(comentarios);
+  link(id) {
+    return React.forwardRef((props, ref) => (
+      <RouterLink ref={ref} to={"/establiment/" + id} {...props} />
+    ));
   }
 
   render() {
     const { classes } = this.props;
-    const { redirect, openModal, user, nom, nomError, nomErrorMessage, showPassword, password, passwordError, passwordErrorMessage } = this.state;
+    const {
+      redirect,
+      openModal,
+      user,
+      nom,
+      nomError,
+      nomErrorMessage,
+      showPassword,
+      password,
+      passwordError,
+      passwordErrorMessage,
+    } = this.state;
 
     if (redirect) {
       return <Redirect to={redirect} />;
     }
 
-    const avatar = user.avatar ? (user.avatar === "noAvatar.jpg" ? "" : defaultUrl + "/upload/images/avatar/" + user.avatar) : "";
-    const newAvatar = this.state.avatar ? window.URL.createObjectURL(this.state.avatar) : avatar;
+    const avatar = user.avatar
+      ? user.avatar === "noAvatar.jpg"
+        ? ""
+        : defaultUrl + "/upload/images/avatar/" + user.avatar
+      : "";
+    const newAvatar = this.state.avatar
+      ? window.URL.createObjectURL(this.state.avatar)
+      : avatar;
     const joined = user.createdAt ? user.createdAt.split(" ")[0] : "";
 
+    const comment = this.state.comentaris;
+    console.log(comment);
     return (
-      
       <div className={classes.root}>
         {/* Modal */}
         <Modal
@@ -336,12 +446,21 @@ class Profile extends Component {
             <div className={classes.paperModal}>
               {/* Modal Header */}
 
-              <Grid container direction="row" justify="space-between" alignItems="center">
+              <Grid
+                container
+                direction="row"
+                justify="space-between"
+                alignItems="center"
+              >
                 <IconButton aria-label="Close" onClick={this.handleCloseModal}>
                   <CloseIcon />
                 </IconButton>
                 <h2>Editar perfil</h2>
-                <Button variant="contained" color="primary" onClick={this.updateUser}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.updateUser}
+                >
                   Guardar
                 </Button>
               </Grid>
@@ -349,7 +468,10 @@ class Profile extends Component {
               {/* End Modal Header */}
 
               <div className={classes.avatarContainer}>
-                <CardActionArea component="label" className={classes.cardActionAvatar}>
+                <CardActionArea
+                  component="label"
+                  className={classes.cardActionAvatar}
+                >
                   <Badge
                     overlap="circle"
                     anchorOrigin={{
@@ -358,9 +480,19 @@ class Profile extends Component {
                     }}
                     badgeContent={<AddAPhoto color="primary" />}
                   >
-                    <Avatar alt={user.nom} src={newAvatar} className={classes.smallAvatar} />
+                    <Avatar
+                      alt={user.nom}
+                      src={newAvatar}
+                      className={classes.smallAvatar}
+                    />
                   </Badge>
-                  <input type="file" accept="image/x-png,image/gif,image/jpeg" name="avatar" onChange={this.handleAvatarChange} hidden />
+                  <input
+                    type="file"
+                    accept="image/x-png,image/gif,image/jpeg"
+                    name="avatar"
+                    onChange={this.handleAvatarChange}
+                    hidden
+                  />
                 </CardActionArea>
               </div>
               <Grid container justify="center" alignItems="center" spacing={2}>
@@ -377,7 +509,10 @@ class Profile extends Component {
                     error={nomError}
                     helperText={
                       nomError ? (
-                        <Typography component={"span"} className={classes.inputError}>
+                        <Typography
+                          component={"span"}
+                          className={classes.inputError}
+                        >
                           <ErrorIcon className={classes.errorIcon} />
                           {nomErrorMessage}
                         </Typography>
@@ -401,7 +536,11 @@ class Profile extends Component {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton aria-label="toggle password visibility" onClick={this.handleClickShowPassword} onMouseDown={this.handleMouseDownPassword}>
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={this.handleClickShowPassword}
+                            onMouseDown={this.handleMouseDownPassword}
+                          >
                             {showPassword ? <Visibility /> : <VisibilityOff />}
                           </IconButton>
                         </InputAdornment>
@@ -410,8 +549,17 @@ class Profile extends Component {
                     error={passwordError}
                     helperText={
                       passwordError ? (
-                        <Typography component={"span"} style={{ fontSize: 12, display: "flex", alignItems: "center" }}>
-                          <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
+                        <Typography
+                          component={"span"}
+                          style={{
+                            fontSize: 12,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <ErrorIcon
+                            style={{ fontSize: 15, marginRight: "0.75rem" }}
+                          />
                           {passwordErrorMessage}
                         </Typography>
                       ) : (
@@ -428,12 +576,22 @@ class Profile extends Component {
         {/* End Modal */}
 
         <Card>
-          <div className={classes.largeBanner}></div>
+          <div className={classes.largeBanner}>
+            <img className={classes.img} src={Logo} alt="Logo" />
+            <Typography variant="h3">Locals</Typography>
+          </div>
           <CardContent>
-            <Avatar alt={user.nom} src={avatar} className={classes.largeAvatar} />
-            <Grid container direction="row" justify="flex-end" alignItems="center">
+            <Grid
+              container
+              direction="row"
+              justify="flex-end"
+              alignItems="center"
+            >
               {user.token === this.props.usuari.token ? (
-                <IconButton aria-label="User settings" onClick={this.handleOpenModal}>
+                <IconButton
+                  aria-label="User settings"
+                  onClick={this.handleOpenModal}
+                >
                   <SettingsIcon fontSize="default" />
                 </IconButton>
               ) : (
@@ -442,15 +600,117 @@ class Profile extends Component {
                 </IconButton>
               )}
             </Grid>
+            <Avatar
+              alt={user.nom}
+              src={avatar}
+              className={classes.largeAvatar}
+            />
             <Typography gutterBottom variant="h5" component="h2">
               {user.nom}
             </Typography>
-            <Chip icon={<CalendarToday fontSize="small" />} label={joined} className={classes.chip} />
+            <Chip
+              icon={<CalendarToday fontSize="small" />}
+              label={joined}
+              className={classes.chip}
+            />
           </CardContent>
         </Card>
-{/* Comentarios */}
+        {/* Comentarios */}
         <Paper className={classes.paper}>
-            {this.comments}
+          <Typography variant="h6">Darrers comentaris</Typography>
+          {comment.map((item, index) => (
+            <List key={index}>
+              {item.isValidat === "1" && (
+                <ListItem title="Comentari validat" alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={item.nomEstabliment}
+                      src={
+                        defaultUrl + "upload/images/establiment/" + item.foto
+                      }
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Rating
+                          value={parseFloat(item.valoracio)}
+                          precision={0.5}
+                          size="small"
+                          readOnly
+                        />
+                        <Typography variant="body2">{item.data}</Typography>
+                      </div>
+                    }
+                    secondary={
+                      <>
+                        <Typography
+                          component={this.link(item.idEstabliment)}
+                          variant="body2"
+                          className={classes.inline}
+                          color="textPrimary"
+                        >
+                          {item.nomEstabliment}
+                        </Typography>
+                        {" — " + item.comentari}
+                      </>
+                    }
+                  />
+                </ListItem>
+              )}
+              {item.isValidat === "0" && (
+                <ListItem title="Comentari no validat" alignItems="flex-start" className={classes.noValidat}>
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={item.nomEstabliment}
+                      src={
+                        defaultUrl + "upload/images/establiment/" + item.foto
+                      }
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Rating
+                          value={parseFloat(item.valoracio)}
+                          precision={0.5}
+                          size="small"
+                          readOnly
+                        />
+                        <Typography variant="body2">{item.data}</Typography>
+                      </div>
+                    }
+                    secondary={
+                      <>
+                        <Typography
+                          component={this.link(item.idEstabliment)}
+                          variant="body2"
+                          className={classes.inline}
+                          color="textPrimary"
+                        >
+                          {item.nomEstabliment}
+                        </Typography>
+                        {" — " + item.comentari}
+                      </>
+                    }
+                  />
+                </ListItem>
+              )}
+              <Divider variant="inset" component="li" />
+            </List>
+          ))}
         </Paper>
       </div>
     );
