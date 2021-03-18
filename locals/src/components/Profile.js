@@ -14,9 +14,6 @@ import { Redirect } from "react-router";
 
 const defaultUrl = process.env["REACT_APP_URL"];
 
-// Images Directory
-const imgUrl = process.env["REACT_APP_PICTURES_URL"];
-
 const styles = (theme) => ({
   root: {
     maxWidth: "60%",
@@ -193,6 +190,7 @@ class Profile extends Component {
   }
 
   handleAvatarChange(event) {
+    console.log("a")
     this.setState({
       avatar: event.target.files[0],
     });
@@ -253,28 +251,25 @@ class Profile extends Component {
     formdata.append("password", password);
     formdata.append("avatar", avatar);
 
-    var url = defaultUrl + "/usuari/update/" + id;
+    var url = defaultUrl + "usuari/update/" + id;
     var dades = new XMLHttpRequest();
     dades.onreadystatechange = () => {
       if (dades.readyState === 4 && dades.status === 200) {
         let resposta = JSON.parse(dades.responseText);
-        // console.log("Resposta d'editar usuari: ", resposta);
+        console.log("Resposta d'editar usuari: ", resposta);
         if (resposta.correcta) {
           this.chargeProfleInfo();
           this.handleCloseModal();
         } else {
           switch (resposta.missatge) {
-            case "NombreDuplicado":
+            case "NomDuplicat":
               this.setState({ nomError: true, nomErrorMessage: "Ese nombre de usuario ya está en uso. Prueba con otro." });
               break;
-            case "BadUsernameFormat":
+            case "BadNomFormat":
               this.setState({ nomError: true, nomErrorMessage: "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )" });
               break;
             case "BadPassword":
               this.setState({ passwordError: true, passwordErrorMessage: "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)" });
-              break;
-            case "BadBioFormat":
-              this.setState({ biografiaError: true, biografiaErrorMessage: "El formato es incorrecto. ( max. 160 caracteres )" });
               break;
             default:
               this.props.handleSnackbar(resposta.missatge, "error");
@@ -295,8 +290,8 @@ class Profile extends Component {
       return <Redirect to={redirect} />;
     }
 
-    const avatar = user.avatar ? (user.avatar === "noAvatar.jpg" ? "" : imgUrl + "/avatar/" + user.avatar) : "";
-    const newAvatar = avatar ? window.URL.createObjectURL(avatar) : avatar;
+    const avatar = user.avatar ? (user.avatar === "noAvatar.jpg" ? "" : defaultUrl + "/upload/images/avatar/" + user.avatar) : "";
+    const newAvatar = this.state.avatar ? window.URL.createObjectURL(this.state.avatar) : avatar;
     const joined = user.createdAt ? user.createdAt.split(" ")[0] : "";
 
     return (
@@ -342,7 +337,6 @@ class Profile extends Component {
                   >
                     <Avatar alt={user.nom} src={newAvatar} className={classes.smallAvatar} />
                   </Badge>
-
                   <input type="file" accept="image/x-png,image/gif,image/jpeg" name="avatar" onChange={this.handleAvatarChange} hidden />
                 </CardActionArea>
               </div>

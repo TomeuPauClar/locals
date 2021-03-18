@@ -6,7 +6,7 @@ import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia,
 import { ArrowDropDown, Book, Phone, Search, SortByAlpha, Star } from "@material-ui/icons";
 
 import axios from "axios";
-import { Rating } from "@material-ui/lab";
+import { Pagination, Rating } from "@material-ui/lab";
 
 // React Router Dom
 import { Link as RouterLink } from "react-router-dom";
@@ -48,19 +48,12 @@ class Establiments extends Component {
     this.state = {
       establiments: [],
       establimentsFiltrats: [],
+      establimentsMostrats: [],
       searchValue: "",
-      demografias: [],
-      demografiasElegidas: [],
-      estados: [],
-      estadosElegidos: [],
-      autores: [],
-      autoresElegidos: [],
-      revistas: [],
-      revistasElegidas: [],
-      generos: [],
-      generosElegidos: [],
       nota: [1, 10],
       orderAnchorEl: null,
+      pagina: 1,
+      numPagines: 0,
     };
 
     this.handleSearch = this.handleSearch.bind(this);
@@ -70,6 +63,7 @@ class Establiments extends Component {
     this.senseOrdenar = this.senseOrdenar.bind(this);
     this.ordenarPerNota = this.ordenarPerNota.bind(this);
     this.ordenarPerNom = this.ordenarPerNom.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
   }
 
   componentDidMount() {
@@ -85,9 +79,11 @@ class Establiments extends Component {
     })
       .then((response) => {
         console.log("Resposta al obtenir establiments: ", response);
+        var numPagines = Math.ceil(response.data.dades.length / 6) < 2 ? null : Math.ceil(response.data.dades.length / 6);
         this.setState(
           {
             establiments: response.data.dades,
+            numPagines,
           },
           this.filtrar
         );
@@ -95,6 +91,26 @@ class Establiments extends Component {
       .catch((error) => {
         console.error("Error al obtenir els establiments: ", error);
       });
+  }
+
+  handlePageChange(e, pagina) {
+    this.setState(
+      {
+        pagina,
+      },
+      this.canviarPagina
+    );
+  }
+
+  canviarPagina() {
+    const { establimentsFiltrats, pagina } = this.state;
+    let numPagina = pagina === 1 ? 0 : pagina * 6;
+    var llistaPaginada = establimentsFiltrats.slice(numPagina, numPagina + 6);
+    var numPagines = Math.ceil(establimentsFiltrats.length / 6) < 2 ? null : Math.ceil(establimentsFiltrats.length / 6);
+    this.setState({
+      establimentsMostrats: llistaPaginada,
+      numPagines,
+    });
   }
 
   handleSearch(e) {
@@ -112,9 +128,12 @@ class Establiments extends Component {
     llistaOrdenada.sort((x, y) => {
       return x.idEstabliment - y.idEstabliment;
     });
-    this.setState({
-      establimentsFiltrats: llistaOrdenada,
-    });
+    this.setState(
+      {
+        establimentsFiltrats: llistaOrdenada,
+      },
+      this.canviarPagina
+    );
     this.handleOrderClose();
   }
 
@@ -129,9 +148,12 @@ class Establiments extends Component {
       }
       return 0;
     });
-    this.setState({
-      establimentsFiltrats: llistaOrdenada,
-    });
+    this.setState(
+      {
+        establimentsFiltrats: llistaOrdenada,
+      },
+      this.canviarPagina
+    );
     this.handleOrderClose();
   }
 
@@ -140,18 +162,24 @@ class Establiments extends Component {
     llistaOrdenada.sort((x, y) => {
       return x.nota - y.nota;
     });
-    this.setState({
-      establimentsFiltrats: llistaOrdenada,
-    });
+    this.setState(
+      {
+        establimentsFiltrats: llistaOrdenada,
+      },
+      this.canviarPagina
+    );
     this.handleOrderClose();
   }
 
   ordre() {
     var llistaOrdenada = this.state.establimentsFiltrats;
     llistaOrdenada.reverse();
-    this.setState({
-      establimentsFiltrats: llistaOrdenada,
-    });
+    this.setState(
+      {
+        establimentsFiltrats: llistaOrdenada,
+      },
+      this.canviarPagina
+    );
   }
 
   handleOrderMenuOpen(event) {
@@ -179,15 +207,18 @@ class Establiments extends Component {
       nomEstabliment = nomEstabliment.trim();
       return nomEstabliment.indexOf(valorACercar) > -1;
     }
-
-    this.setState({
-      establimentsFiltrats: establimentsFiltrats,
-    });
+    this.setState(
+      {
+        establimentsFiltrats: establimentsFiltrats,
+        pagina: 1,
+      },
+      this.canviarPagina
+    );
   }
 
   render() {
     const { classes } = this.props;
-    const { searchValue, orderAnchorEl, establimentsFiltrats } = this.state;
+    const { searchValue, orderAnchorEl, establimentsMostrats, pagina, numPagines } = this.state;
 
     return (
       <Box m={4}>
@@ -265,7 +296,7 @@ class Establiments extends Component {
           </Grid>
           <Grid item md={9}>
             <Box display="flex" flexDirection="row" flexWrap="wrap" justifyContent="center" className={classes.contenidorEstabliments}>
-              {establimentsFiltrats.map((establiment) => {
+              {establimentsMostrats.map((establiment) => {
                 let image = establiment.foto ? defaultUrl + "/upload/images/establiment/" + establiment.foto : defaultUrl + "/upload/images/no-image.png";
                 return (
                   <Card key={establiment.idEstabliment} className={classes.card}>
@@ -283,12 +314,14 @@ class Establiments extends Component {
                     </CardActionArea>
                     <CardActions style={{ display: "felx", alignItems: "center", justifyContent: "space-between" }}>
                       <Chip icon={<Phone />} label={establiment.telefon} />
-                      <Rating name="read-only" value={parseFloat(establiment.nota)} precision={0.5} size="small" readOnly />
+                      <Rating value={parseFloat(establiment.nota)} precision={0.5} size="small" readOnly />
                     </CardActions>
                   </Card>
                 );
               })}
             </Box>
+            <Typography>Page: {pagina}</Typography>
+            {numPagines && <Pagination count={numPagines} page={pagina} onChange={this.handlePageChange} />}
           </Grid>
         </Grid>
       </Box>

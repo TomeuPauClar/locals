@@ -1,0 +1,19 @@
+## TODO
+- Hi ha un sistema de navegació a través de les diferents funcionalitats.✔
+- Es mostren fotografies de forma automàtica dels establiments destacats.✔
+- Es visualitza de forma ordenada i paginada la informació bàsica dels establiments del directori.
+- Hi ha un cercador d’establiments. ✔
+- Es visualitza la informació particular d'un establiment seleccionat. ✔
+- Es visualitzen els 5 comentaris més recents sobre el conjunt d’establiments.
+- Hi ha un formulari que contacte amb l’administrador a través d’email.
+- Els usuaris poden registrar-se a la web. ✔
+- Els usuaris poden identificar-se per a realitzar comentaris i/o valoracions.
+- Els usuaris poden fer comentaris sobre els establiments.
+- Els usuaris poden valorar els establiments.
+- Els establiments mantenen i mostren la seva valoració global.
+- Hi ha un login per accedir al backend.
+- Hi ha una llista (ordenada, filtrada i paginada) de les taules.
+- Es poden insertar, modificar i esborrar de totes les taules.
+- Es poden pujar i associar imatges als establiments.
+- L’usuari pot accedir al seu perfil i modificar-lo. ✔
+- L’usuari pot restablir la seva contrasenya.

@@ -126,8 +126,8 @@ class App extends Component {
               <Route exact path="/login" render={(props) => <Login {...props} loggedIn={loggedIn} handleSuccessfulAuth={this.handleSuccessfulAuth} handleSnackbar={this.handleSnackbar} />} />
               <Route exact path="/register" render={(props) => <Register {...props} loggedIn={loggedIn} handleSuccessfulAuth={this.handleSuccessfulAuth} handleSnackbar={this.handleSnackbar} />} />
               <Route exact path="/contacte" render={(props) => <Contact {...props} />} />
-              <Route exact path="/establiment/:id" render={(props) => <Establiment {...props} />} />
-              {dadesCarregades && <Route exact path="/perfil/:id" render={(props) => <Profile {...props} loggedIn={loggedIn} usuari={usuari} />} />}
+              {dadesCarregades && <Route exact path="/establiment/:id" render={(props) => <Establiment {...props} loggedIn={loggedIn} usuari={usuari} />} />}
+              {dadesCarregades && <Route exact path="/perfil/:id" render={(props) => <Profile {...props} loggedIn={loggedIn} usuari={usuari} handleSnackbar={this.handleSnackbar} />} />}
               <Route exact path="/home">
                 <Redirect to="/" />
               </Route>
