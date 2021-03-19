@@ -12,8 +12,8 @@
 - ✔ Els usuaris poden valorar els establiments.
 - ✔ Els establiments mantenen i mostren la seva valoració global.
 - ✔ Hi ha un login per accedir al backend.
-- Hi ha una llista (ordenada, filtrada i paginada) de les taules.
-- Es poden insertar, modificar i esborrar de totes les taules.
+- ✔ Hi ha una llista (ordenada, filtrada i paginada) de les taules.
+- ✔ Es poden insertar, modificar i esborrar de totes les taules.
 - Es poden pujar i associar imatges als establiments.
 - ✔ L’usuari pot accedir al seu perfil i modificar-lo.
 - ✔ L’usuari pot restablir la seva contrasenya.

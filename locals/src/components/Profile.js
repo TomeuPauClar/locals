@@ -426,7 +426,6 @@ class Profile extends Component {
     const joined = user.createdAt ? user.createdAt.split(" ")[0] : "";
 
     const comment = this.state.comentaris;
-    console.log(comment);
     return (
       <div className={classes.root}>
         {/* Modal */}

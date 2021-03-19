@@ -3,7 +3,7 @@ import React, { Component } from "react";
 
 // Material UI imports
 import { DataGrid, GridToolbar } from "@material-ui/data-grid";
-import { Button, Container, IconButton, withStyles } from "@material-ui/core";
+import { BottomNavigation, BottomNavigationAction, Button, Container, IconButton, withStyles } from "@material-ui/core";
 
 // Axios Import
 import axios from "axios";
@@ -11,8 +11,11 @@ import axios from "axios";
 // React Router Dom
 //import { Link as RouterLink } from "react-router-dom";
 import { Redirect } from "react-router";
-import { Add, Delete, Edit } from "@material-ui/icons";
+import { Add, Delete, Edit, TableChart } from "@material-ui/icons";
 import ModalGestio from "./ModalGestio";
+
+// React Router Dom
+import { Link as RouterLink } from "react-router-dom";
 
 const defaultUrl = process.env["REACT_APP_URL"];
 
@@ -23,7 +26,7 @@ const styles = (theme) => ({
 class Gestio extends Component {
   constructor(props) {
     super(props);
-    this.state = { redirect: null, taula: [], columnes: [], dadesCarregades: false, openModal: false, funcio: null, campsEditats: {} };
+    this.state = { redirect: null, taula: [], columnes: [], dadesCarregades: false, openModal: false, funcio: null, campsEditats: {}, navegacio: 0, taules: [] };
     this.createColumns = this.createColumns.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -32,53 +35,80 @@ class Gestio extends Component {
     this.handleInsert = this.handleInsert.bind(this);
     this.onChange = this.onChange.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.canviaNavegacio = this.canviaNavegacio.bind(this);
+    this.getTaules = this.getTaules.bind(this);
   }
 
   componentDidMount() {
     this.start();
+    this.getTaules();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.match.params.taula !== prevProps.match.params.taula) {
       this.start();
+      this.getTaules();
     }
   }
 
   start() {
     const taula = this.props.match.params.taula;
+    const { loggedIn, usuari } = this.props;
     document.title = "Gestió - Locals";
-    if (taula) {
-      axios({
-        method: "get",
-        url: defaultUrl + taula + "/",
-        responseType: "json",
-      })
-        .then((response) => {
-          console.log("Resposta gestió taula", response);
-          if (response.data.correcta) {
-            this.setState(
-              {
-                taula: response.data.dades,
-                dadesCarregades: true,
-              },
-              this.createColumns
-            );
-            document.title = taula + " - Gestió - Locals";
-          } else {
-            this.setState({
-              redirect: "/NotFound",
-              dadesCarregades: true,
-            });
-          }
+    if (loggedIn && usuari && usuari.isAdmin !== "0") {
+      if (taula) {
+        axios({
+          method: "get",
+          url: defaultUrl + taula + "/",
+          responseType: "json",
         })
-        .catch((error) => {
-          console.error("Error al obtenir la informacón de la taula: " + taula, error);
+          .then((response) => {
+            // console.log("Resposta gestió taula", response);
+            if (response.data.correcta) {
+              this.setState(
+                {
+                  taula: response.data.dades,
+                  dadesCarregades: true,
+                },
+                this.createColumns
+              );
+              document.title = taula + " - Gestió - Locals";
+            } else {
+              this.setState({
+                redirect: "/NotFound",
+                dadesCarregades: true,
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtenir la informacón de la taula: " + taula, error);
+          });
+      } else {
+        this.setState({
+          redirect: "/NotFound",
         });
+      }
     } else {
       this.setState({
-        redirect: "/NotFound",
+        redirect: "/",
       });
     }
+  }
+
+  getTaules() {
+    axios({
+      method: "get",
+      url: defaultUrl + "taules/",
+      responseType: "json",
+    })
+      .then((response) => {
+        this.setState({
+          taules: response.data,
+        });
+      })
+      .catch((error) => {
+        console.error("Error al obtenir les taules: ", error);
+      });
   }
 
   CustomToolbar() {
@@ -178,7 +208,7 @@ class Gestio extends Component {
       data: campsEditats,
     })
       .then((response) => {
-        console.log("Resposta update taula " + taula + ": ", response);
+        // console.log("Resposta update taula " + taula + ": ", response);
         if (response.data.correcta) {
           this.handleCloseModal();
           this.start();
@@ -200,7 +230,7 @@ class Gestio extends Component {
       data: campsEditats,
     })
       .then((response) => {
-        console.log("Resposta insert taula " + taula + ": ", response);
+        // console.log("Resposta insert taula " + taula + ": ", response);
         if (response.data.correcta) {
           this.handleCloseModal();
           this.start();
@@ -220,7 +250,7 @@ class Gestio extends Component {
       headers: { "Content-Type": "application/json" },
     })
       .then((response) => {
-        console.log("Resposta delete taula " + taula + ": ", response);
+        // console.log("Resposta delete taula " + taula + ": ", response);
         if (response.data.correcta) {
           this.handleCloseModal();
           this.start();
@@ -243,10 +273,15 @@ class Gestio extends Component {
     });
   }
 
+  canviaNavegacio(e, value) {
+    this.setState({
+      navegacio: value,
+    });
+  }
+
   render() {
     const { classes, match } = this.props;
-    const { redirect, taula, dadesCarregades, columnes, openModal, funcio, campsEditats } = this.state;
-
+    const { redirect, taula, dadesCarregades, columnes, openModal, funcio, campsEditats, navegacio, taules } = this.state;
     if (redirect) return <Redirect to={redirect} />;
 
     return (
@@ -269,6 +304,9 @@ class Gestio extends Component {
               </div>
             </div>
           </div>
+          <BottomNavigation value={navegacio} onChange={this.canviaNavegacio} showLabels>
+            {taules && taules.map((taula) => <BottomNavigationAction component={getLink(taula)} label={camelToWord(taula)} icon={<TableChart />} />)}
+          </BottomNavigation>
         </Container>
       </>
     );
@@ -280,4 +318,8 @@ export default withStyles(styles, { withTheme: true })(Gestio);
 function camelToWord(camel) {
   let result = camel.replace(/([A-Z])/g, " $1");
   return result.charAt(0).toUpperCase() + result.slice(1);
+}
+
+function getLink(v) {
+  return React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to={"/gestio/" + v} />);
 }

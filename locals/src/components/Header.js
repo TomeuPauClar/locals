@@ -10,7 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { Button } from "@material-ui/core";
-import { Home, RestaurantMenu } from "@material-ui/icons";
+import { Home, RestaurantMenu, TableChart } from "@material-ui/icons";
 
 // React Router Dom
 import { Link as RouterLink } from "react-router-dom";
@@ -53,6 +53,7 @@ class Header extends Component {
     const { classes, loggedIn, usuari } = this.props;
     const { anchorEl } = this.state;
 
+    const LinkGestio = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to={"/gestio/categoria-foto"} />);
     const LinkHome = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/" />);
     const LinkEstabliments = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/establiments" />);
     const LinkLogin = React.forwardRef((props, ref) => <RouterLink ref={ref} {...props} to="/login" />);
@@ -73,6 +74,11 @@ class Header extends Component {
               <Button variant="text" startIcon={<RestaurantMenu />} component={LinkEstabliments}>
                 Establiments
               </Button>
+              {loggedIn && usuari && usuari.isAdmin !== "0" && (
+                <Button variant="text" startIcon={<TableChart />} component={LinkGestio}>
+                  Gestió
+                </Button>
+              )}
             </div>
             {loggedIn ? (
               <div style={{ display: "flex", alignItems: "center" }}>
