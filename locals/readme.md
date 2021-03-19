@@ -16,4 +16,4 @@
 - Es poden insertar, modificar i esborrar de totes les taules.
 - Es poden pujar i associar imatges als establiments.
 - ✔ L’usuari pot accedir al seu perfil i modificar-lo.
-- L’usuari pot restablir la seva contrasenya.
+- ✔ L’usuari pot restablir la seva contrasenya.

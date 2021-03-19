@@ -21,6 +21,7 @@ import ScrollToTop from "./ScrollToTop";
 // Axios Import
 import axios from "axios";
 import Profile from "./components/Profile";
+import Gestio from "./components/Gestio";
 
 // Cookies functions
 const cookies = require("./cookies");
@@ -134,6 +135,7 @@ class App extends Component {
               <Route exact path="/contacte" render={(props) => <Contact {...props} />} />
               {dadesCarregades && <Route exact path="/establiment/:id" render={(props) => <Establiment {...props} loggedIn={loggedIn} usuari={usuari} />} />}
               {dadesCarregades && <Route exact path="/perfil/:id" render={(props) => <Profile {...props} loggedIn={loggedIn} usuari={usuari} handleSnackbar={this.handleSnackbar} />} />}
+              {dadesCarregades && <Route exact path="/gestio/:taula" render={(props) => <Gestio {...props} loggedIn={loggedIn} usuari={usuari} handleSnackbar={this.handleSnackbar} />} />}
               <Route exact path="/home">
                 <Redirect to="/" />
               </Route>

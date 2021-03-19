@@ -302,7 +302,7 @@ class Establiment extends Component {
     }
 
     const avatar = usuari.avatar ? (usuari.avatar === "noAvatar.jpg" ? "" : defaultUrl + "/upload/images/avatar/" + usuari.avatar) : "";
-    let image = establiment.fotos ? defaultUrl + "/upload/images/establiment/" + establiment.fotos[0].nomFoto : defaultUrl + "/upload/images/no-image.png";
+    let image = establiment.fotos && establiment.fotos[0] ? defaultUrl + "/upload/images/establiment/" + establiment.fotos[0].nomFoto : defaultUrl + "/upload/images/no-image.png";
 
     const comentariExtra = commentExtra ? { display: "flex" } : { display: "none" };
 
