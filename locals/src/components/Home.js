@@ -2,22 +2,7 @@
 import React, { Component } from "react";
 
 // Material UI imports
-import {
-  Avatar,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-  Typography,
-  withStyles,
-} from "@material-ui/core";
+import { Avatar, Button, Card, CardContent, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Paper, Typography, withStyles } from "@material-ui/core";
 
 //Animated slider components
 import Slider from "react-animated-slider";
@@ -74,7 +59,7 @@ const styles = (theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-  }
+  },
 });
 
 class Home extends Component {
@@ -124,9 +109,7 @@ class Home extends Component {
   }
 
   link(id, ruta) {
-    return React.forwardRef((props, ref) => (
-      <RouterLink ref={ref} to={"/"+ruta+"/" + id} {...props} />
-    ));
+    return React.forwardRef((props, ref) => <RouterLink ref={ref} to={"/" + ruta + "/" + id} {...props} />);
   }
 
   render() {
@@ -151,18 +134,9 @@ class Home extends Component {
                 <div className="center">
                   <h1>{item.nom}</h1>
                   <p>Telèfon: {item.telefon}</p>
-                  <Rating
-                    name="half-rating"
-                    value={parseFloat(item.nota)}
-                    precision={0.5}
-                    size="medium"
-                    readOnly
-                  />
+                  <Rating name="half-rating" value={parseFloat(item.nota)} precision={0.5} size="medium" readOnly />
                   <br />
-                  <Button
-                    color="secondary"
-                    component={this.link(item.idEstabliment,"establiment")}
-                  >
+                  <Button color="secondary" component={this.link(item.idEstabliment, "establiment")}>
                     Visitans
                   </Button>
                 </div>
@@ -178,23 +152,13 @@ class Home extends Component {
             </Grid>
             <Divider width="70%" />
             <Grid item xs={12}>
-              <Typography variant="h5">
-                Som una empresa que promociona establiments, oferint al client
-                la oportunitat de valorar i compartir les seves experiencies
-              </Typography>
+              <Typography variant="h5">Som una empresa que promociona establiments, oferint al client la oportunitat de valorar i compartir les seves experiencies</Typography>
             </Grid>
             <Grid item xs={4}>
               <Card className={classes.root}>
                 <CardContent>
-                  <Typography
-                    className={classes.title}
-                    color="textSecondary"
-                    gutterBottom
-                    component="div"
-                  >
-                    <span className={classes.span}>
-                      {this.state.info_general.usuaris}
-                    </span>
+                  <Typography className={classes.title} color="textSecondary" gutterBottom component="div">
+                    <span className={classes.span}>{this.state.info_general.usuaris}</span>
                     usuaris
                   </Typography>
                 </CardContent>
@@ -204,9 +168,7 @@ class Home extends Component {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography component="div" color="textSecondary" gutterBottom>
-                    <span className={classes.span}>
-                      {this.state.info_general.establiments}
-                    </span>
+                    <span className={classes.span}>{this.state.info_general.establiments}</span>
                     establiments
                   </Typography>
                 </CardContent>
@@ -216,9 +178,7 @@ class Home extends Component {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography component="div" color="textSecondary" gutterBottom>
-                    <span className={classes.span}>
-                      {this.state.info_general.comentaris}
-                    </span>
+                    <span className={classes.span}>{this.state.info_general.comentaris}</span>
                     comentaris
                   </Typography>
                 </CardContent>
@@ -231,43 +191,23 @@ class Home extends Component {
               <List key={index}>
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
-                    <Avatar
-                      alt={item.nom}
-                      src={defaultUrl + "upload/images/avatar/" + item.avatar}
-                    />
+                    <Avatar alt={item.nom} src={defaultUrl + "upload/images/avatar/" + item.avatar} />
                   </ListItemAvatar>
                   <ListItemText
                     primary={
-                      <span
-                        className={classes.spanPro}
-                      >
-                        <Rating
-                          value={parseFloat(item.valoracio)}
-                          precision={0.5}
-                          size="small"
-                          readOnly
-                        />
+                      <span className={classes.spanPro}>
+                        <Rating value={parseFloat(item.valoracio)} precision={0.5} size="small" readOnly />
                         <Typography variant="body2">{item.data}</Typography>
                       </span>
                     }
                     secondary={
                       <span>
                         {"De: "}
-                        <Typography
-                          component={this.link(item.idUsuari,"perfil")}
-                          variant="body2"
-                          className={classes.inline+" "+classes.link}
-                          color="textPrimary"
-                        >
+                        <Typography component={this.link(item.idUsuari, "perfil")} variant="body2" className={classes.inline + " " + classes.link} color="textPrimary">
                           {item.nomUsuari}
                         </Typography>
                         {" a: "}
-                        <Typography
-                          component={this.link(item.idEstabliment,"establiment")}
-                          variant="body2"
-                          className={classes.inline+" "+classes.link}
-                          color="textPrimary"
-                        >
+                        <Typography component={this.link(item.idEstabliment, "establiment")} variant="body2" className={classes.inline + " " + classes.link} color="textPrimary">
                           {item.nomEstabliment}
                         </Typography>
                         {" — " + item.comentari}

@@ -2,13 +2,7 @@
 import React, { Component } from "react";
 
 // Material UI imports
-import {
-  Container,
-  Grid,
-  Paper,
-  Typography,
-  withStyles,
-} from "@material-ui/core";
+import { Container, Grid, Paper, Typography, withStyles } from "@material-ui/core";
 
 import Logo from "../alcateam.svg";
 const styles = (theme) => ({
@@ -38,13 +32,7 @@ class NotFound extends Component {
       <>
         <Container>
           <Paper className={classes.paper}>
-            <Grid
-              container
-              spacing={2}
-              direction="column"
-              justify="center"
-              alignItems="center"
-            >
+            <Grid container spacing={2} direction="column" justify="center" alignItems="center">
               <Grid item xs={12}>
                 <Typography variant="h1">
                   <span>404</span>
@@ -52,20 +40,14 @@ class NotFound extends Component {
               </Grid>
               <Grid item xs={12}>
                 <div>
-                  <img
-                    className={classes.img}
-                    src={Logo}
-                    alt="Recurs no trobat"
-                  />
+                  <img className={classes.img} src={Logo} alt="Recurs no trobat" />
                 </div>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="h3">Not Found</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h4">
-                  Alguna cosa no està bé, puc notar-ho
-                </Typography>
+                <Typography variant="h4">Alguna cosa no està bé, puc notar-ho</Typography>
               </Grid>
             </Grid>
           </Paper>

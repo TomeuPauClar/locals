@@ -170,7 +170,7 @@ class Establiment extends Component {
       responseType: "json",
     })
       .then((response) => {
-        console.log("Resposta Info Establiment", response);
+        // console.log("Resposta Info Establiment", response);
         if (response.data.correcta) {
           this.setState(
             {
@@ -199,7 +199,7 @@ class Establiment extends Component {
         responseType: "json",
       })
         .then((response) => {
-          console.log("L'usuari ja té comentari?", response);
+          // console.log("L'usuari ja té comentari?", response);
           this.setState({
             jaTeComentari: response.data.dades,
           });
@@ -279,7 +279,6 @@ class Establiment extends Component {
       responseType: "json",
     })
       .then((response) => {
-        console.log(response);
         if (response.data.correcta) {
           this.setState(
             {

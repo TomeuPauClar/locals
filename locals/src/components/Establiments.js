@@ -351,7 +351,9 @@ class Establiments extends Component {
         <Grid container direction="row" spacing={2}>
           <Grid item md={3} style={{ width: "100%" }}>
             <Paper style={{ padding: 10 }}>
-              <Typography variant="h5" style={{ paddingBottom: 15 }}>Filtres</Typography>
+              <Typography variant="h5" style={{ paddingBottom: 15 }}>
+                Filtres
+              </Typography>
               <FormControl variant="outlined" fullWidth>
                 <InputLabel id="filtrar-per-categoria-preu">Categoria Preu</InputLabel>
                 <Select labelId="filtrar-per-categoria-preu" value={categoriaPreu} onChange={this.handleChangeCategoriaPreu} label="Categoria Preu">

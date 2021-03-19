@@ -179,17 +179,17 @@ class Login extends Component {
       dataType: "json",
     })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
 
     emailjs.send('service_vwcldja', 'template_91jzf7y', envio, 'user_JBFHmg8PRIQKgXdHEOeWS')
       .then((result) => {
           this.setState({redirect:"/"});
       }, (error) => {
-          console.log(error.text);
+          console.error(error.text);
       });
   }
 

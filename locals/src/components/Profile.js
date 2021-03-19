@@ -1,28 +1,6 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import {
-  Card,
-  CardContent,
-  Avatar,
-  Typography,
-  Grid,
-  IconButton,
-  Chip,
-  Backdrop,
-  Button,
-  Fade,
-  InputAdornment,
-  Modal,
-  TextField,
-  CardActionArea,
-  Badge,
-  Paper,
-  List,
-  ListItem,
-  ListItemAvatar,
-  Divider,
-  ListItemText,
-} from "@material-ui/core";
+import { Card, CardContent, Avatar, Typography, Grid, IconButton, Chip, Backdrop, Button, Fade, InputAdornment, Modal, TextField, CardActionArea, Badge, Paper, List, ListItem, ListItemAvatar, Divider, ListItemText } from "@material-ui/core";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import SettingsIcon from "@material-ui/icons/Settings";
 import CloseIcon from "@material-ui/icons/Close";
@@ -48,8 +26,7 @@ const styles = (theme) => ({
   largeBanner: {
     height: 240,
     backgroundColor: "rgb(255,255,255)",
-    background:
-      "radial-gradient(circle, rgba(255,196,0,1) 0%, rgba(255,255,255,1) 69%)",
+    background: "radial-gradient(circle, rgba(255,196,0,1) 0%, rgba(255,255,255,1) 69%)",
     color: "#000",
     display: "flex",
     justifyContent: "center",
@@ -137,7 +114,7 @@ const styles = (theme) => ({
   },
   noValidat: {
     backgroundColor: "#696969",
-  }
+  },
 });
 
 class Profile extends Component {
@@ -221,7 +198,7 @@ class Profile extends Component {
       responseType: "json",
     })
       .then((response) => {
-        console.log("Resposta Info Usuari", response);
+        // console.log("Resposta Info Usuari", response);
         if (response.data.correcta) {
           this.setState({
             user: response.data.dades,
@@ -254,7 +231,6 @@ class Profile extends Component {
   }
 
   handleAvatarChange(event) {
-    console.log("a");
     this.setState({
       avatar: event.target.files[0],
     });
@@ -271,8 +247,7 @@ class Profile extends Component {
     } else if (nom.length < 1 || nom.length > 50) {
       this.setState({
         nomError: true,
-        nomErrorMessage:
-          "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
+        nomErrorMessage: "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
       });
       return;
     } else {
@@ -288,13 +263,10 @@ class Profile extends Component {
         passwordErrorMessage: "Introduce una contraseña.",
       });
       return;
-    } else if (
-      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password)
-    ) {
+    } else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password)) {
       this.setState({
         passwordError: true,
-        passwordErrorMessage:
-          "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
+        passwordErrorMessage: "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
       });
       return;
     } else {
@@ -315,8 +287,7 @@ class Profile extends Component {
     } else if (nom.length < 1 || nom.length > 50) {
       this.setState({
         nomError: true,
-        nomErrorMessage:
-          "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
+        nomErrorMessage: "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
       });
       return;
     } else {
@@ -329,13 +300,10 @@ class Profile extends Component {
         passwordErrorMessage: "Introduce una contraseña.",
       });
       return;
-    } else if (
-      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password)
-    ) {
+    } else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(password)) {
       this.setState({
         passwordError: true,
-        passwordErrorMessage:
-          "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
+        passwordErrorMessage: "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
       });
       return;
     } else {
@@ -352,7 +320,7 @@ class Profile extends Component {
     dades.onreadystatechange = () => {
       if (dades.readyState === 4 && dades.status === 200) {
         let resposta = JSON.parse(dades.responseText);
-        console.log("Resposta d'editar usuari: ", resposta);
+        // console.log("Resposta d'editar usuari: ", resposta);
         if (resposta.correcta) {
           this.chargeProfleInfo();
           this.handleCloseModal();
@@ -361,22 +329,19 @@ class Profile extends Component {
             case "NomDuplicat":
               this.setState({
                 nomError: true,
-                nomErrorMessage:
-                  "Ese nombre de usuario ya está en uso. Prueba con otro.",
+                nomErrorMessage: "Ese nombre de usuario ya está en uso. Prueba con otro.",
               });
               break;
             case "BadNomFormat":
               this.setState({
                 nomError: true,
-                nomErrorMessage:
-                  "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
+                nomErrorMessage: "El formato del nombre de usuario és incorrecto. ( min. 1 caracteres, max. 50 caracteres )",
               });
               break;
             case "BadPassword":
               this.setState({
                 passwordError: true,
-                passwordErrorMessage:
-                  "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
+                passwordErrorMessage: "El formato de la contraseña és incorrecto. (min. 8 caracteres, debe contener al menos una letra mayúscula, una letra minúscula y 1 número. Puede contener caracteres especiales.)",
               });
               break;
             default:
@@ -391,38 +356,19 @@ class Profile extends Component {
   }
 
   link(id) {
-    return React.forwardRef((props, ref) => (
-      <RouterLink ref={ref} to={"/establiment/" + id} {...props} />
-    ));
+    return React.forwardRef((props, ref) => <RouterLink ref={ref} to={"/establiment/" + id} {...props} />);
   }
 
   render() {
     const { classes } = this.props;
-    const {
-      redirect,
-      openModal,
-      user,
-      nom,
-      nomError,
-      nomErrorMessage,
-      showPassword,
-      password,
-      passwordError,
-      passwordErrorMessage,
-    } = this.state;
+    const { redirect, openModal, user, nom, nomError, nomErrorMessage, showPassword, password, passwordError, passwordErrorMessage } = this.state;
 
     if (redirect) {
       return <Redirect to={redirect} />;
     }
 
-    const avatar = user.avatar
-      ? user.avatar === "noAvatar.jpg"
-        ? ""
-        : defaultUrl + "/upload/images/avatar/" + user.avatar
-      : "";
-    const newAvatar = this.state.avatar
-      ? window.URL.createObjectURL(this.state.avatar)
-      : avatar;
+    const avatar = user.avatar ? (user.avatar === "noAvatar.jpg" ? "" : defaultUrl + "/upload/images/avatar/" + user.avatar) : "";
+    const newAvatar = this.state.avatar ? window.URL.createObjectURL(this.state.avatar) : avatar;
     const joined = user.createdAt ? user.createdAt.split(" ")[0] : "";
 
     const comment = this.state.comentaris;
@@ -445,21 +391,12 @@ class Profile extends Component {
             <div className={classes.paperModal}>
               {/* Modal Header */}
 
-              <Grid
-                container
-                direction="row"
-                justify="space-between"
-                alignItems="center"
-              >
+              <Grid container direction="row" justify="space-between" alignItems="center">
                 <IconButton aria-label="Close" onClick={this.handleCloseModal}>
                   <CloseIcon />
                 </IconButton>
                 <h2>Editar perfil</h2>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={this.updateUser}
-                >
+                <Button variant="contained" color="primary" onClick={this.updateUser}>
                   Guardar
                 </Button>
               </Grid>
@@ -467,10 +404,7 @@ class Profile extends Component {
               {/* End Modal Header */}
 
               <div className={classes.avatarContainer}>
-                <CardActionArea
-                  component="label"
-                  className={classes.cardActionAvatar}
-                >
+                <CardActionArea component="label" className={classes.cardActionAvatar}>
                   <Badge
                     overlap="circle"
                     anchorOrigin={{
@@ -479,19 +413,9 @@ class Profile extends Component {
                     }}
                     badgeContent={<AddAPhoto color="primary" />}
                   >
-                    <Avatar
-                      alt={user.nom}
-                      src={newAvatar}
-                      className={classes.smallAvatar}
-                    />
+                    <Avatar alt={user.nom} src={newAvatar} className={classes.smallAvatar} />
                   </Badge>
-                  <input
-                    type="file"
-                    accept="image/x-png,image/gif,image/jpeg"
-                    name="avatar"
-                    onChange={this.handleAvatarChange}
-                    hidden
-                  />
+                  <input type="file" accept="image/x-png,image/gif,image/jpeg" name="avatar" onChange={this.handleAvatarChange} hidden />
                 </CardActionArea>
               </div>
               <Grid container justify="center" alignItems="center" spacing={2}>
@@ -508,10 +432,7 @@ class Profile extends Component {
                     error={nomError}
                     helperText={
                       nomError ? (
-                        <Typography
-                          component={"span"}
-                          className={classes.inputError}
-                        >
+                        <Typography component={"span"} className={classes.inputError}>
                           <ErrorIcon className={classes.errorIcon} />
                           {nomErrorMessage}
                         </Typography>
@@ -535,11 +456,7 @@ class Profile extends Component {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={this.handleClickShowPassword}
-                            onMouseDown={this.handleMouseDownPassword}
-                          >
+                          <IconButton aria-label="toggle password visibility" onClick={this.handleClickShowPassword} onMouseDown={this.handleMouseDownPassword}>
                             {showPassword ? <Visibility /> : <VisibilityOff />}
                           </IconButton>
                         </InputAdornment>
@@ -556,9 +473,7 @@ class Profile extends Component {
                             alignItems: "center",
                           }}
                         >
-                          <ErrorIcon
-                            style={{ fontSize: 15, marginRight: "0.75rem" }}
-                          />
+                          <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
                           {passwordErrorMessage}
                         </Typography>
                       ) : (
@@ -580,17 +495,9 @@ class Profile extends Component {
             <Typography variant="h3">Locals</Typography>
           </div>
           <CardContent>
-            <Grid
-              container
-              direction="row"
-              justify="flex-end"
-              alignItems="center"
-            >
+            <Grid container direction="row" justify="flex-end" alignItems="center">
               {user.token === this.props.usuari.token ? (
-                <IconButton
-                  aria-label="User settings"
-                  onClick={this.handleOpenModal}
-                >
+                <IconButton aria-label="User settings" onClick={this.handleOpenModal}>
                   <SettingsIcon fontSize="default" />
                 </IconButton>
               ) : (
@@ -599,19 +506,11 @@ class Profile extends Component {
                 </IconButton>
               )}
             </Grid>
-            <Avatar
-              alt={user.nom}
-              src={avatar}
-              className={classes.largeAvatar}
-            />
+            <Avatar alt={user.nom} src={avatar} className={classes.largeAvatar} />
             <Typography gutterBottom variant="h5" component="h2">
               {user.nom}
             </Typography>
-            <Chip
-              icon={<CalendarToday fontSize="small" />}
-              label={joined}
-              className={classes.chip}
-            />
+            <Chip icon={<CalendarToday fontSize="small" />} label={joined} className={classes.chip} />
           </CardContent>
         </Card>
         {/* Comentarios */}
@@ -622,12 +521,7 @@ class Profile extends Component {
               {item.isValidat === "1" && (
                 <ListItem title="Comentari validat" alignItems="flex-start">
                   <ListItemAvatar>
-                    <Avatar
-                      alt={item.nomEstabliment}
-                      src={
-                        defaultUrl + "upload/images/establiment/" + item.foto
-                      }
-                    />
+                    <Avatar alt={item.nomEstabliment} src={defaultUrl + "upload/images/establiment/" + item.foto} />
                   </ListItemAvatar>
                   <ListItemText
                     primary={
@@ -638,23 +532,13 @@ class Profile extends Component {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Rating
-                          value={parseFloat(item.valoracio)}
-                          precision={0.5}
-                          size="small"
-                          readOnly
-                        />
+                        <Rating value={parseFloat(item.valoracio)} precision={0.5} size="small" readOnly />
                         <Typography variant="body2">{item.data}</Typography>
                       </div>
                     }
                     secondary={
                       <>
-                        <Typography
-                          component={this.link(item.idEstabliment)}
-                          variant="body2"
-                          className={classes.inline}
-                          color="textPrimary"
-                        >
+                        <Typography component={this.link(item.idEstabliment)} variant="body2" className={classes.inline} color="textPrimary">
                           {item.nomEstabliment}
                         </Typography>
                         {" — " + item.comentari}
@@ -666,12 +550,7 @@ class Profile extends Component {
               {item.isValidat === "0" && (
                 <ListItem title="Comentari no validat" alignItems="flex-start" className={classes.noValidat}>
                   <ListItemAvatar>
-                    <Avatar
-                      alt={item.nomEstabliment}
-                      src={
-                        defaultUrl + "upload/images/establiment/" + item.foto
-                      }
-                    />
+                    <Avatar alt={item.nomEstabliment} src={defaultUrl + "upload/images/establiment/" + item.foto} />
                   </ListItemAvatar>
                   <ListItemText
                     primary={
@@ -682,23 +561,13 @@ class Profile extends Component {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Rating
-                          value={parseFloat(item.valoracio)}
-                          precision={0.5}
-                          size="small"
-                          readOnly
-                        />
+                        <Rating value={parseFloat(item.valoracio)} precision={0.5} size="small" readOnly />
                         <Typography variant="body2">{item.data}</Typography>
                       </div>
                     }
                     secondary={
                       <>
-                        <Typography
-                          component={this.link(item.idEstabliment)}
-                          variant="body2"
-                          className={classes.inline}
-                          color="textPrimary"
-                        >
+                        <Typography component={this.link(item.idEstabliment)} variant="body2" className={classes.inline} color="textPrimary">
                           {item.nomEstabliment}
                         </Typography>
                         {" — " + item.comentari}

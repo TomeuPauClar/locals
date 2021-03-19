@@ -36,7 +36,7 @@ class ModalGestio extends Component {
 
   componentDidMount() {
     const { taula } = this.props;
-    console.log("Taula:", taula);
+    // console.log("Taula:", taula);
     if (taula) {
       this.getCampsEditables();
     }
@@ -59,7 +59,7 @@ class ModalGestio extends Component {
       responseType: "json",
     })
       .then((response) => {
-        console.log("Resposta camps editables", response);
+        // console.log("Resposta camps editables", response);
         if (response.data.correcta) {
           this.setState({
             camps: response.data.dades,

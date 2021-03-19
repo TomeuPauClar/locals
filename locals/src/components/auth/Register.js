@@ -189,7 +189,6 @@ class Register extends Component {
       data: { nom: nom, email: email, password: password, passwordConfirmation: passwordConfirmation },
     })
       .then((response) => {
-        console.log(response);
         if (response.data.correcta) {
           this.props.handleSuccessfulAuth(response.data);
           this.setState({ redirect: "/" });
