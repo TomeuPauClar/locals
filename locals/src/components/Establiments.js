@@ -403,7 +403,7 @@ class Establiments extends Component {
                         </Typography>
                       </CardContent>
                     </CardActionArea>
-                    <CardActions style={{ display: "felx", alignItems: "center", justifyContent: "space-between" }}>
+                    <CardActions style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <Chip icon={<Phone />} label={establiment.telefon} />
                       <Rating value={parseFloat(establiment.nota)} precision={0.5} size="small" readOnly />
                     </CardActions>

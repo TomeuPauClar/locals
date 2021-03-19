@@ -36,8 +36,17 @@ const styles = (theme) => ({
   errorInput: {
     fontSize: 12, 
     display: "flex", 
-    alignItems: "center"
+    alignItems: "center",
   },
+  errorIcon: {
+    fontSize: 15, 
+    marginRight: "0.75rem",
+  },
+  formGeneral: {
+    display: "flex", 
+    alignItems: "center", 
+    justifyContent: "space-between"
+  }
 });
 
 class Login extends Component {
@@ -219,7 +228,7 @@ class Login extends Component {
                 helperText={
                   this.state.emailError ? (
                     <Typography component={"span"} className={classes.errorInput}>
-                      <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
+                      <ErrorIcon className={classes.errorIcon} />
                       {this.state.emailErrorMessage}
                     </Typography>
                   ) : (
@@ -250,7 +259,7 @@ class Login extends Component {
                 helperText={
                   this.state.passwordError ? (
                     <Typography component={"span"} className={classes.errorInput}>
-                      <ErrorIcon style={{ fontSize: 15, marginRight: "0.75rem" }} />
+                      <ErrorIcon className={classes.errorIcon} />
                       {this.state.passwordErrorMessage}
                     </Typography>
                   ) : (
@@ -258,7 +267,7 @@ class Login extends Component {
                   )
                 }
               />
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div className={classes.formGeneral}>
                 <FormControlLabel control={<Checkbox name="remember" checked={this.state.remember} onChange={this.handleChange} color="primary" />} label="Recorda'm" />
                 <Link onClick={this.enviarCorreuCanviarContrasenya} color="primary">
                   Has oblidat la teva contrasenya?
